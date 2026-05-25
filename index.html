@@ -3,14 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gallery Manager — St Hugh's Anglican Home</title>
+    <title>Admin — St Hugh's Anglican Home</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap"
       rel="stylesheet"
     />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
     <style>
-      /* ── VARIABLES ── */
       :root {
         --teal: #124848;
         --teal-mid: #1b6b6b;
@@ -21,26 +21,21 @@
         --beige: #f0ebe0;
         --beige-dark: #d8caaf;
         --red: #c0392b;
-        --red-light: #e74c3c;
+        --red-l: #e74c3c;
         --green: #27ae60;
         --text: #0f2a2a;
         --text-mid: #4a6868;
         --white: #ffffff;
-        --shadow: 0 4px 24px rgba(18, 72, 72, 0.12);
-        --shadow-lg: 0 12px 48px rgba(18, 72, 72, 0.18);
-        --radius: 6px;
+        --sh: 0 4px 24px rgba(18, 72, 72, 0.12);
+        --sh-lg: 0 12px 48px rgba(18, 72, 72, 0.18);
+        --r: 6px;
       }
-
-      /* ── RESET ── */
       *,
       *::before,
       *::after {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
-      }
-      html {
-        scroll-behavior: smooth;
       }
       body {
         font-family: "Jost", sans-serif;
@@ -49,38 +44,67 @@
         min-height: 100vh;
       }
 
-      /* ── GATE ── */
-      #gate {
-        position: fixed;
-        inset: 0;
-        z-index: 9999;
-        background: var(--teal);
+      /* LOGIN */
+      #login-page {
+        min-height: 100vh;
         display: flex;
         align-items: center;
         justify-content: center;
+        background: var(--teal);
       }
-      .gate-box {
+      .login-box {
         background: var(--white);
-        border-radius: var(--radius);
-        padding: 48px 44px;
-        width: min(400px, 92vw);
+        border-radius: var(--r);
+        padding: 52px 46px;
+        width: min(420px, 92vw);
+        box-shadow: var(--sh-lg);
         text-align: center;
-        box-shadow: var(--shadow-lg);
       }
-      .gate-box h1 {
+      .login-logo {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--beige);
+        border: 2px solid var(--beige-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 18px;
+      }
+      .login-logo svg {
+        width: 28px;
+        height: 28px;
+        stroke: var(--teal);
+        fill: none;
+        stroke-width: 1.5;
+      }
+      .login-box h1 {
         font-family: "Cormorant Garamond", serif;
         font-size: 1.9rem;
         color: var(--teal);
+        margin-bottom: 4px;
+      }
+      .login-box > p {
+        font-size: 0.84rem;
+        color: var(--text-mid);
+        margin-bottom: 32px;
+      }
+      .lf {
+        margin-bottom: 16px;
+        text-align: left;
+      }
+      .lf label {
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-mid);
         margin-bottom: 6px;
       }
-      .gate-box p {
-        font-size: 0.85rem;
-        color: var(--text-mid);
-        margin-bottom: 28px;
-      }
-      .gate-input {
+      .lf input {
         width: 100%;
-        padding: 12px 16px;
+        padding: 12px 14px;
         border: 1.5px solid var(--beige-dark);
         border-radius: 4px;
         font-family: "Jost", sans-serif;
@@ -88,16 +112,15 @@
         color: var(--text);
         background: var(--cream);
         outline: none;
-        margin-bottom: 14px;
-        text-align: center;
-        letter-spacing: 0.2em;
+        transition: border-color 0.2s;
       }
-      .gate-input:focus {
+      .lf input:focus {
         border-color: var(--teal-light);
       }
-      .gate-btn {
+      .login-btn {
         width: 100%;
         padding: 13px;
+        margin-top: 8px;
         background: var(--teal);
         color: var(--gold-light);
         font-family: "Jost", sans-serif;
@@ -109,111 +132,231 @@
         border-radius: 4px;
         cursor: pointer;
         transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
       }
-      .gate-btn:hover {
+      .login-btn:hover {
         background: var(--teal-mid);
       }
-      .gate-err {
-        font-size: 0.82rem;
+      .login-btn:disabled {
+        opacity: 0.55;
+        cursor: not-allowed;
+      }
+      .login-err {
+        margin-top: 14px;
+        padding: 10px 14px;
+        background: rgba(192, 57, 43, 0.08);
+        border: 1px solid rgba(192, 57, 43, 0.3);
+        border-radius: 4px;
+        font-size: 0.84rem;
         color: var(--red);
-        margin-top: 10px;
         display: none;
       }
+      .login-note {
+        margin-top: 20px;
+        font-size: 0.76rem;
+        color: var(--text-mid);
+        line-height: 1.6;
+      }
 
-      /* ── HEADER ── */
+      /* ADMIN */
+      #admin-page {
+        display: none;
+      }
       header {
         background: var(--teal);
-        padding: 18px 0;
+        padding: 14px 0;
         border-bottom: 2px solid rgba(184, 150, 62, 0.3);
+        position: sticky;
+        top: 0;
+        z-index: 100;
       }
-      .hdr-inner {
-        width: min(1200px, 94vw);
+      .hdr {
+        width: min(1300px, 96vw);
         margin: 0 auto;
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 1rem;
       }
-      .hdr-brand {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-      }
-      .hdr-brand-text strong {
+      .hdr-brand strong {
         font-family: "Cormorant Garamond", serif;
         font-size: 1.2rem;
         color: var(--white);
         display: block;
       }
-      .hdr-brand-text span {
+      .hdr-brand span {
         font-size: 0.68rem;
         letter-spacing: 0.14em;
         text-transform: uppercase;
         color: var(--gold-light);
         opacity: 0.8;
       }
-      .hdr-badge {
-        display: inline-flex;
+      .hdr-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .admin-email {
+        font-size: 0.8rem;
+        color: rgba(255, 255, 255, 0.65);
+      }
+      .logout-btn {
+        display: flex;
         align-items: center;
         gap: 7px;
-        background: rgba(184, 150, 62, 0.15);
-        border: 1px solid rgba(184, 150, 62, 0.35);
-        border-radius: 20px;
-        padding: 5px 14px;
-        font-size: 0.72rem;
-        font-weight: 600;
-        letter-spacing: 0.1em;
-        text-transform: uppercase;
-        color: var(--gold-light);
+        padding: 7px 16px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        border-radius: 4px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.76rem;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.85);
+        cursor: pointer;
+        transition: background 0.2s;
       }
-      .hdr-badge .dot {
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: #4ade80;
-        animation: pulse 2s infinite;
+      .logout-btn:hover {
+        background: rgba(255, 255, 255, 0.2);
       }
-      @keyframes pulse {
-        0%,
-        100% {
-          box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6);
-        }
-        50% {
-          box-shadow: 0 0 0 5px rgba(74, 222, 128, 0);
-        }
+      .logout-btn svg {
+        width: 14px;
+        height: 14px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
       }
 
-      /* ── LAYOUT ── */
-      main {
-        width: min(1200px, 94vw);
+      .tabs {
+        background: var(--white);
+        border-bottom: 1px solid var(--beige-dark);
+      }
+      .tabs-inner {
+        width: min(1300px, 96vw);
         margin: 0 auto;
-        padding: 44px 0 80px;
+        display: flex;
       }
-      .section-title {
-        font-family: "Cormorant Garamond", serif;
-        font-size: 1.8rem;
-        font-weight: 600;
-        color: var(--teal);
-        margin-bottom: 6px;
-      }
-      .section-sub {
-        font-size: 0.88rem;
+      .tab-btn {
+        padding: 14px 28px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
         color: var(--text-mid);
-        margin-bottom: 28px;
+        background: none;
+        border: none;
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .tab-btn:hover {
+        color: var(--teal);
+      }
+      .tab-btn.active {
+        color: var(--teal);
+        border-bottom-color: var(--gold);
+        font-weight: 600;
+      }
+      .tab-btn svg {
+        width: 15px;
+        height: 15px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 1.8;
+      }
+      .badge {
+        background: var(--teal);
+        color: var(--gold-light);
+        font-size: 0.66rem;
+        font-weight: 700;
+        padding: 2px 7px;
+        border-radius: 10px;
       }
 
-      /* ── UPLOAD ZONE ── */
-      .upload-section {
+      main {
+        width: min(1300px, 96vw);
+        margin: 0 auto;
+        padding: 36px 0 80px;
+      }
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.active {
+        display: block;
+      }
+
+      .card {
         background: var(--white);
         border: 1px solid var(--beige-dark);
-        border-radius: var(--radius);
-        padding: 36px;
-        margin-bottom: 48px;
-        box-shadow: var(--shadow);
+        border-radius: var(--r);
+        padding: 32px;
+        box-shadow: var(--sh);
+        margin-bottom: 28px;
       }
+      .card-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.55rem;
+        color: var(--teal);
+        margin-bottom: 4px;
+      }
+      .card-sub {
+        font-size: 0.84rem;
+        color: var(--text-mid);
+        margin-bottom: 24px;
+      }
+      .toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 24px;
+      }
+      .toolbar-info {
+        font-size: 0.84rem;
+        color: var(--text-mid);
+      }
+      .toolbar-info span {
+        font-weight: 600;
+        color: var(--teal);
+      }
+      .btn-refresh {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 16px;
+        background: var(--cream);
+        border: 1px solid var(--beige-dark);
+        border-radius: 4px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: var(--text-mid);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-refresh:hover {
+        background: var(--beige);
+        color: var(--teal);
+      }
+      .btn-refresh svg {
+        width: 14px;
+        height: 14px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+
+      /* DROP ZONE */
       .drop-zone {
         border: 2.5px dashed var(--beige-dark);
-        border-radius: var(--radius);
+        border-radius: var(--r);
         padding: 52px 24px;
         text-align: center;
         cursor: pointer;
@@ -243,7 +386,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto 16px;
+        margin: 0 auto 14px;
       }
       .drop-icon svg {
         width: 26px;
@@ -269,42 +412,41 @@
         cursor: pointer;
       }
 
-      /* Previews */
       #preview-list {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 16px;
-        margin-top: 24px;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 14px;
+        margin-top: 22px;
       }
       .preview-card {
         border: 1px solid var(--beige-dark);
-        border-radius: var(--radius);
+        border-radius: var(--r);
         overflow: hidden;
         background: var(--cream);
       }
-      .preview-img-wrap {
+      .preview-img {
         aspect-ratio: 4/3;
         overflow: hidden;
         background: var(--beige);
       }
-      .preview-img-wrap img {
+      .preview-img img {
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
       .preview-body {
-        padding: 12px;
+        padding: 10px;
         display: flex;
         flex-direction: column;
-        gap: 8px;
+        gap: 7px;
       }
       .preview-field {
         width: 100%;
-        padding: 8px 10px;
+        padding: 7px 10px;
         border: 1px solid var(--beige-dark);
         border-radius: 3px;
         font-family: "Jost", sans-serif;
-        font-size: 0.83rem;
+        font-size: 0.82rem;
         color: var(--text);
         background: var(--white);
         outline: none;
@@ -312,30 +454,29 @@
       .preview-field:focus {
         border-color: var(--teal-light);
       }
-      .preview-remove {
+      .preview-rm {
         width: 100%;
-        padding: 7px;
+        padding: 6px;
         background: transparent;
         border: 1px solid var(--beige-dark);
         border-radius: 3px;
         font-family: "Jost", sans-serif;
-        font-size: 0.78rem;
+        font-size: 0.76rem;
         font-weight: 500;
         color: var(--red);
         cursor: pointer;
         transition: all 0.2s;
       }
-      .preview-remove:hover {
+      .preview-rm:hover {
         background: var(--red);
         color: var(--white);
         border-color: var(--red);
       }
 
-      /* Upload button */
       #upload-btn {
         display: none;
-        margin-top: 20px;
-        padding: 13px 36px;
+        margin-top: 18px;
+        padding: 12px 32px;
         background: var(--teal);
         color: var(--gold-light);
         font-family: "Jost", sans-serif;
@@ -350,7 +491,7 @@
           background 0.2s,
           transform 0.2s;
         align-items: center;
-        gap: 10px;
+        gap: 9px;
       }
       #upload-btn:hover {
         background: var(--teal-mid);
@@ -362,23 +503,21 @@
         transform: none;
       }
       #upload-btn svg {
-        width: 16px;
-        height: 16px;
+        width: 15px;
+        height: 15px;
         stroke: currentColor;
         fill: none;
         stroke-width: 2;
       }
-
-      /* Progress */
-      .progress-bar-wrap {
+      .prog-wrap {
         display: none;
-        margin-top: 14px;
+        margin-top: 12px;
         height: 6px;
         background: var(--beige-dark);
         border-radius: 3px;
         overflow: hidden;
       }
-      .progress-bar {
+      .prog-bar {
         height: 100%;
         background: linear-gradient(90deg, var(--teal-light), var(--gold));
         border-radius: 3px;
@@ -386,96 +525,15 @@
         transition: width 0.3s;
       }
 
-      /* Toast */
-      #toast {
-        position: fixed;
-        bottom: 2rem;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 8000;
-        padding: 13px 26px;
-        border-radius: 4px;
-        font-size: 0.87rem;
-        font-weight: 500;
-        color: var(--white);
-        display: none;
-        align-items: center;
-        gap: 9px;
-        box-shadow: var(--shadow-lg);
-        white-space: nowrap;
-      }
-      #toast.success {
-        background: var(--green);
-      }
-      #toast.error {
-        background: var(--red);
-      }
-      #toast svg {
-        width: 16px;
-        height: 16px;
-        fill: currentColor;
-      }
-
-      /* ── GALLERY MANAGER ── */
-      .gallery-manager {
-        background: var(--white);
-        border: 1px solid var(--beige-dark);
-        border-radius: var(--radius);
-        padding: 36px;
-        box-shadow: var(--shadow);
-      }
-      .mgr-toolbar {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        flex-wrap: wrap;
-        gap: 12px;
-        margin-bottom: 28px;
-      }
-      .mgr-info {
-        font-size: 0.84rem;
-        color: var(--text-mid);
-      }
-      .mgr-info span {
-        font-weight: 600;
-        color: var(--teal);
-      }
-      .mgr-refresh {
-        display: flex;
-        align-items: center;
-        gap: 7px;
-        padding: 8px 18px;
-        background: var(--cream);
-        border: 1px solid var(--beige-dark);
-        border-radius: 4px;
-        font-family: "Jost", sans-serif;
-        font-size: 0.78rem;
-        font-weight: 500;
-        color: var(--text-mid);
-        cursor: pointer;
-        transition: all 0.2s;
-      }
-      .mgr-refresh:hover {
-        background: var(--beige);
-        color: var(--teal);
-      }
-      .mgr-refresh svg {
-        width: 14px;
-        height: 14px;
-        stroke: currentColor;
-        fill: none;
-        stroke-width: 2;
-      }
-
-      /* Gallery grid (admin) */
+      /* GALLERY ADMIN */
       #gallery-admin-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
         gap: 18px;
       }
       .admin-card {
         border: 1px solid var(--beige-dark);
-        border-radius: var(--radius);
+        border-radius: var(--r);
         overflow: hidden;
         background: var(--cream);
         transition:
@@ -484,7 +542,7 @@
         cursor: grab;
       }
       .admin-card:hover {
-        box-shadow: var(--shadow);
+        box-shadow: var(--sh);
         transform: translateY(-3px);
       }
       .admin-card.dragging {
@@ -495,22 +553,22 @@
         border-color: var(--teal-light);
         box-shadow: 0 0 0 2px var(--teal-light);
       }
-      .admin-img-wrap {
+      .adm-img {
         aspect-ratio: 4/3;
         overflow: hidden;
         background: var(--beige);
         position: relative;
       }
-      .admin-img-wrap img {
+      .adm-img img {
         width: 100%;
         height: 100%;
         object-fit: cover;
         transition: transform 0.4s;
       }
-      .admin-card:hover .admin-img-wrap img {
+      .admin-card:hover .adm-img img {
         transform: scale(1.04);
       }
-      .admin-order-badge {
+      .order-badge {
         position: absolute;
         top: 8px;
         left: 8px;
@@ -518,60 +576,58 @@
         color: var(--gold-light);
         font-size: 0.7rem;
         font-weight: 600;
-        letter-spacing: 0.08em;
-        padding: 3px 9px;
+        padding: 3px 8px;
         border-radius: 2px;
       }
-      .admin-card-body {
-        padding: 12px;
+      .adm-body {
+        padding: 11px;
       }
-      .admin-card-title {
+      .adm-title {
         font-family: "Cormorant Garamond", serif;
         font-size: 1rem;
         font-weight: 600;
         color: var(--teal);
-        margin-bottom: 4px;
+        margin-bottom: 3px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
-      .admin-card-desc {
-        font-size: 0.78rem;
+      .adm-desc {
+        font-size: 0.76rem;
         color: var(--text-mid);
-        margin-bottom: 10px;
-        line-height: 1.5;
-        min-height: 1.5em;
+        margin-bottom: 9px;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
+        min-height: 1em;
       }
-      .admin-card-actions {
+      .adm-actions {
         display: flex;
-        gap: 8px;
+        gap: 7px;
       }
       .btn-toggle {
         flex: 1;
         padding: 6px 8px;
         border-radius: 3px;
         font-family: "Jost", sans-serif;
-        font-size: 0.74rem;
+        font-size: 0.73rem;
         font-weight: 500;
         cursor: pointer;
         border: 1px solid;
         transition: all 0.2s;
       }
-      .btn-toggle.active {
+      .btn-toggle.on {
         background: rgba(39, 174, 96, 0.1);
         border-color: var(--green);
         color: var(--green);
       }
-      .btn-toggle.inactive {
+      .btn-toggle.off {
         background: rgba(192, 57, 43, 0.07);
-        border-color: var(--red-light);
+        border-color: var(--red-l);
         color: var(--red);
       }
-      .btn-delete {
-        padding: 6px 10px;
+      .btn-del {
+        padding: 6px 9px;
         border: 1px solid var(--beige-dark);
         border-radius: 3px;
         background: transparent;
@@ -581,40 +637,36 @@
         display: flex;
         align-items: center;
       }
-      .btn-delete:hover {
+      .btn-del:hover {
         background: var(--red);
         border-color: var(--red);
         color: var(--white);
       }
-      .btn-delete svg {
+      .btn-del svg {
         width: 13px;
         height: 13px;
         stroke: currentColor;
         fill: none;
         stroke-width: 2;
       }
-
-      /* Empty state */
-      .empty-state {
+      .empty {
+        grid-column: 1/-1;
         text-align: center;
         padding: 52px 24px;
         color: var(--text-mid);
       }
-      .empty-state svg {
+      .empty svg {
         width: 48px;
         height: 48px;
         stroke: var(--beige-dark);
         fill: none;
         stroke-width: 1.2;
-        margin: 0 auto 14px;
+        margin: 0 auto 12px;
         display: block;
       }
-      .empty-state p {
-        font-size: 0.9rem;
-      }
-
-      /* Loading skeleton */
       .skeleton {
+        border-radius: 4px;
+        min-height: 200px;
         background: linear-gradient(
           90deg,
           var(--beige) 25%,
@@ -623,7 +675,6 @@
         );
         background-size: 200% 100%;
         animation: shimmer 1.4s infinite;
-        border-radius: 4px;
       }
       @keyframes shimmer {
         0% {
@@ -634,35 +685,28 @@
         }
       }
 
-      /* ── MESSAGES SECTION ── */
-      .messages-section {
-        background: var(--white);
-        border: 1px solid var(--beige-dark);
-        border-radius: var(--radius);
-        padding: 36px;
-        margin-top: 48px;
-        box-shadow: var(--shadow);
-      }
-      .msg-table-wrap {
+      /* MESSAGES */
+      .msg-wrap {
         overflow-x: auto;
       }
       table {
         width: 100%;
         border-collapse: collapse;
-        font-size: 0.87rem;
+        font-size: 0.86rem;
       }
       thead tr {
         background: var(--beige);
         border-bottom: 2px solid var(--beige-dark);
       }
       th {
-        padding: 11px 14px;
+        padding: 10px 13px;
         text-align: left;
-        font-size: 0.72rem;
+        font-size: 0.71rem;
         font-weight: 600;
         letter-spacing: 0.1em;
         text-transform: uppercase;
         color: var(--text-mid);
+        white-space: nowrap;
       }
       tbody tr {
         border-bottom: 1px solid var(--beige);
@@ -675,644 +719,733 @@
         background: rgba(27, 107, 107, 0.04);
       }
       td {
-        padding: 11px 14px;
+        padding: 10px 13px;
         color: var(--text);
         vertical-align: top;
       }
-      td .unread-dot {
+      .unread-dot {
         display: inline-block;
         width: 7px;
         height: 7px;
         border-radius: 50%;
         background: var(--teal-light);
-        margin-right: 7px;
+        margin-right: 6px;
         vertical-align: middle;
-        flex-shrink: 0;
       }
       .msg-type {
         display: inline-block;
-        padding: 2px 9px;
+        padding: 2px 8px;
         border-radius: 20px;
-        font-size: 0.72rem;
+        font-size: 0.71rem;
         font-weight: 600;
         text-transform: uppercase;
         letter-spacing: 0.06em;
         background: var(--beige);
         color: var(--text-mid);
       }
-      .btn-mark-read {
+      .btn-mark {
         padding: 5px 10px;
         background: transparent;
         border: 1px solid var(--beige-dark);
         border-radius: 3px;
         font-family: "Jost", sans-serif;
-        font-size: 0.74rem;
+        font-size: 0.73rem;
         cursor: pointer;
         color: var(--text-mid);
         transition: all 0.2s;
         white-space: nowrap;
       }
-      .btn-mark-read:hover {
+      .btn-mark:hover {
         background: var(--teal);
         border-color: var(--teal);
         color: var(--white);
       }
+      .read-ok {
+        font-size: 0.74rem;
+        color: var(--text-mid);
+      }
+
+      #toast {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 9000;
+        padding: 12px 24px;
+        border-radius: 4px;
+        font-size: 0.86rem;
+        font-weight: 500;
+        color: var(--white);
+        display: none;
+        align-items: center;
+        gap: 9px;
+        box-shadow: var(--sh-lg);
+        white-space: nowrap;
+      }
+      #toast.ok {
+        background: var(--green);
+      }
+      #toast.err {
+        background: var(--red);
+      }
+      .spin {
+        width: 16px;
+        height: 16px;
+        border: 2px solid rgba(201, 177, 117, 0.35);
+        border-top-color: var(--gold-light);
+        border-radius: 50%;
+        animation: rot 0.7s linear infinite;
+        display: inline-block;
+      }
+      @keyframes rot {
+        to {
+          transform: rotate(360deg);
+        }
+      }
 
       @media (max-width: 640px) {
-        .hdr-badge {
-          display: none;
-        }
-        .upload-section,
-        .gallery-manager,
-        .messages-section {
-          padding: 22px 18px;
+        .card {
+          padding: 20px 16px;
         }
         .drop-zone {
-          padding: 36px 16px;
+          padding: 36px 14px;
+        }
+        .admin-email {
+          display: none;
         }
       }
     </style>
   </head>
   <body>
-    <!-- PASSWORD GATE -->
-    <div id="gate">
-      <div class="gate-box">
-        <h1>Gallery Manager</h1>
-        <p>St Hugh's Anglican Home — Admin Access</p>
-        <input
-          type="password"
-          id="gate-input"
-          class="gate-input"
-          placeholder="Enter admin password"
-          onkeydown="if (event.key === 'Enter') checkPassword();"
-        />
-        <button class="gate-btn" onclick="checkPassword()">Enter</button>
-        <p class="gate-err" id="gate-err">
-          Incorrect password. Please try again.
+    <!-- LOGIN -->
+    <div id="login-page">
+      <div class="login-box">
+        <div class="login-logo">
+          <svg viewBox="0 0 24 24">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+          </svg>
+        </div>
+        <h1>Admin Panel</h1>
+        <p>St Hugh's Anglican Home — Accès sécurisé</p>
+        <div class="lf">
+          <label>Adresse email</label
+          ><input
+            type="email"
+            id="login-email"
+            placeholder="admin@sthughs.mu"
+            autocomplete="email"
+          />
+        </div>
+        <div class="lf">
+          <label>Mot de passe</label
+          ><input
+            type="password"
+            id="login-password"
+            placeholder="••••••••••••"
+            autocomplete="current-password"
+            onkeydown="if (event.key === 'Enter') doLogin();"
+          />
+        </div>
+        <button class="login-btn" id="login-btn" onclick="doLogin()">
+          Se connecter
+        </button>
+        <div class="login-err" id="login-err"></div>
+        <p class="login-note">
+          Compte créé via Supabase Dashboard<br />Authentication → Users → Add
+          user
         </p>
       </div>
     </div>
 
-    <!-- HEADER -->
-    <header>
-      <div class="hdr-inner">
-        <div class="hdr-brand">
-          <div class="hdr-brand-text">
-            <strong>St Hugh's Anglican Home</strong>
-            <span>Gallery Manager — Admin</span>
+    <!-- ADMIN -->
+    <div id="admin-page">
+      <header>
+        <div class="hdr">
+          <div class="hdr-brand">
+            <strong>St Hugh's — Admin</strong
+            ><span>Panneau d'administration</span>
+          </div>
+          <div class="hdr-right">
+            <span class="admin-email" id="admin-email-display"></span>
+            <button class="logout-btn" onclick="doLogout()">
+              <svg viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Déconnexion
+            </button>
           </div>
         </div>
-        <div class="hdr-badge">
-          <span class="dot"></span> Connected to Supabase
+      </header>
+
+      <div class="tabs">
+        <div class="tabs-inner">
+          <button class="tab-btn active" onclick="switchTab('gallery', this)">
+            <svg viewBox="0 0 24 24">
+              <rect x="3" y="3" width="18" height="18" rx="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21 15 16 10 5 21" />
+            </svg>
+            Galerie
+          </button>
+          <button
+            class="tab-btn"
+            onclick="switchTab('messages', this)"
+            id="tab-msg-btn"
+          >
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+              />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+            Messages
+            <span class="badge" id="unread-badge" style="display: none">0</span>
+          </button>
         </div>
       </div>
-    </header>
 
-    <!-- MAIN -->
-    <main>
-      <!-- ── UPLOAD SECTION ── -->
-      <div class="upload-section">
-        <h2 class="section-title">Upload New Images</h2>
-        <p class="section-sub">
-          Drag &amp; drop images below, add a title and description, then click
-          Upload.
-        </p>
-
-        <div
-          class="drop-zone"
-          id="drop-zone"
-          ondragover="handleDragOver(event)"
-          ondragleave="handleDragLeave(event)"
-          ondrop="handleDrop(event)"
-        >
-          <input
-            type="file"
-            id="file-input"
-            multiple
-            accept="image/jpeg,image/png,image/webp,image/gif"
-            onchange="handleFiles(this.files)"
-          />
-          <div class="drop-icon">
-            <svg viewBox="0 0 24 24">
-              <polyline points="16 16 12 12 8 16" />
-              <line x1="12" y1="12" x2="12" y2="21" />
-              <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
-            </svg>
-          </div>
-          <h3>Drop images here</h3>
-          <p>
-            or
-            <span onclick="document.getElementById('file-input').click()"
-              >browse files</span
+      <main>
+        <!-- GALERIE -->
+        <div class="tab-panel active" id="panel-gallery">
+          <div class="card">
+            <div class="card-title">Uploader des images</div>
+            <p class="card-sub">
+              Glissez vos images, ajoutez un titre et une description, puis
+              cliquez sur Uploader.
+            </p>
+            <div
+              class="drop-zone"
+              id="drop-zone"
+              ondragover="onDragOver(event)"
+              ondragleave="onDragLeave()"
+              ondrop="onDrop(event)"
             >
-            &nbsp;·&nbsp; JPEG, PNG, WebP, GIF — max 10 MB each
-          </p>
-        </div>
-
-        <div id="preview-list"></div>
-
-        <button id="upload-btn" onclick="uploadAll()">
-          <svg viewBox="0 0 24 24">
-            <polyline points="16 16 12 12 8 16" />
-            <line x1="12" y1="12" x2="12" y2="21" />
-            <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
-          </svg>
-          Upload to Gallery
-        </button>
-
-        <div class="progress-bar-wrap" id="progress-wrap">
-          <div class="progress-bar" id="progress-bar"></div>
-        </div>
-      </div>
-
-      <!-- ── GALLERY MANAGER ── -->
-      <div class="gallery-manager">
-        <div class="mgr-toolbar">
-          <div>
-            <h2 class="section-title">Manage Gallery</h2>
-            <p class="mgr-info">
-              <span id="img-count">—</span> images in database &nbsp;·&nbsp;
-              Drag cards to reorder
-            </p>
-          </div>
-          <button class="mgr-refresh" onclick="loadAdminGallery()">
-            <svg viewBox="0 0 24 24">
-              <polyline points="23 4 23 10 17 10" />
-              <polyline points="1 20 1 14 7 14" />
-              <path
-                d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+              <input
+                type="file"
+                id="file-input"
+                multiple
+                accept="image/jpeg,image/png,image/webp,image/gif"
+                onchange="onFiles(this.files)"
               />
-            </svg>
-            Refresh
-          </button>
-        </div>
-        <div id="gallery-admin-grid">
-          <!-- loaded by JS -->
-          <div class="skeleton" style="height: 220px; border-radius: 6px"></div>
-          <div class="skeleton" style="height: 220px; border-radius: 6px"></div>
-          <div class="skeleton" style="height: 220px; border-radius: 6px"></div>
-        </div>
-      </div>
-
-      <!-- ── MESSAGES ── -->
-      <div class="messages-section">
-        <div class="mgr-toolbar">
-          <div>
-            <h2 class="section-title">Contact Messages</h2>
-            <p class="mgr-info">
-              <span id="msg-count">—</span> messages &nbsp;·&nbsp;
-              <span id="unread-count" style="color: var(--teal)">—</span> unread
-            </p>
-          </div>
-          <button class="mgr-refresh" onclick="loadMessages()">
-            <svg viewBox="0 0 24 24">
-              <polyline points="23 4 23 10 17 10" />
-              <polyline points="1 20 1 14 7 14" />
-              <path
-                d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
-              />
-            </svg>
-            Refresh
-          </button>
-        </div>
-        <div class="msg-table-wrap">
-          <table id="msg-table">
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Name</th>
-                <th>Email</th>
-                <th>Phone</th>
-                <th>Type</th>
-                <th>Message</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="msg-tbody">
-              <tr>
-                <td
-                  colspan="7"
-                  style="
-                    text-align: center;
-                    color: var(--text-mid);
-                    padding: 32px;
-                  "
+              <div class="drop-icon">
+                <svg viewBox="0 0 24 24">
+                  <polyline points="16 16 12 12 8 16" />
+                  <line x1="12" y1="12" x2="12" y2="21" />
+                  <path
+                    d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"
+                  />
+                </svg>
+              </div>
+              <h3>Glissez vos images ici</h3>
+              <p>
+                ou
+                <span onclick="document.getElementById('file-input').click()"
+                  >parcourir les fichiers</span
                 >
-                  Loading messages…
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </main>
+                &nbsp;·&nbsp; JPEG, PNG, WebP — max 10 Mo
+              </p>
+            </div>
+            <div id="preview-list"></div>
+            <button id="upload-btn" onclick="uploadAll()">
+              <svg viewBox="0 0 24 24">
+                <polyline points="16 16 12 12 8 16" />
+                <line x1="12" y1="12" x2="12" y2="21" />
+                <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+              </svg>
+              Uploader dans la galerie
+            </button>
+            <div class="prog-wrap" id="prog-wrap">
+              <div class="prog-bar" id="prog-bar"></div>
+            </div>
+          </div>
 
-    <!-- TOAST -->
+          <div class="card">
+            <div class="toolbar">
+              <div>
+                <div class="card-title">Gérer la galerie</div>
+                <p class="toolbar-info">
+                  <span id="img-count">—</span> images &nbsp;·&nbsp; Glissez les
+                  cartes pour réordonner
+                </p>
+              </div>
+              <button class="btn-refresh" onclick="loadGalleryAdmin()">
+                <svg viewBox="0 0 24 24">
+                  <polyline points="23 4 23 10 17 10" />
+                  <polyline points="1 20 1 14 7 14" />
+                  <path
+                    d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+                  />
+                </svg>
+                Actualiser
+              </button>
+            </div>
+            <div id="gallery-admin-grid">
+              <div class="skeleton"></div>
+              <div class="skeleton"></div>
+              <div class="skeleton"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- MESSAGES -->
+        <div class="tab-panel" id="panel-messages">
+          <div class="card">
+            <div class="toolbar">
+              <div>
+                <div class="card-title">Messages reçus</div>
+                <p class="toolbar-info">
+                  <span id="msg-total">—</span> messages &nbsp;·&nbsp;
+                  <span id="msg-unread" style="color: var(--teal)">—</span> non
+                  lus
+                </p>
+              </div>
+              <button class="btn-refresh" onclick="loadMessages()">
+                <svg viewBox="0 0 24 24">
+                  <polyline points="23 4 23 10 17 10" />
+                  <polyline points="1 20 1 14 7 14" />
+                  <path
+                    d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+                  />
+                </svg>
+                Actualiser
+              </button>
+            </div>
+            <div class="msg-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Prénom</th>
+                    <th>Nom</th>
+                    <th>Email</th>
+                    <th>Téléphone</th>
+                    <th>Type</th>
+                    <th>Message</th>
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody id="msg-tbody">
+                  <tr>
+                    <td
+                      colspan="8"
+                      style="
+                        text-align: center;
+                        padding: 32px;
+                        color: var(--text-mid);
+                      "
+                    >
+                      Chargement…
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
     <div id="toast"></div>
 
     <script>
-      // ── CONFIG ──────────────────────────────────────────────
+      // ══════════════════════════════════════════════════════════════
+      //  SEULE LA CLÉ PUBLIQUE (anon) EST ICI — aucune SECRET KEY
+      //  La sécurité est assurée par Supabase Auth (JWT) + RLS
+      // ══════════════════════════════════════════════════════════════
       const SUPABASE_URL = "https://mgbfcznrpiwobsxxryhl.supabase.co";
       const ANON_KEY = "sb_publishable_S9-EBPoyhWf6Biaf1jgtMQ_fi7qtH9-";
-      const SECRET_KEY = "sb_secret_VUwh6hqu296qrc2P-IfOdg_U0I4_mI9";
       const BUCKET = "gallery";
-      const ADMIN_PASS = "admin"; // ← Change this password
 
-      // ── GATE ────────────────────────────────────────────────
-      function checkPassword() {
-        const val = document.getElementById("gate-input").value;
-        if (val === ADMIN_PASS) {
-          document.getElementById("gate").style.display = "none";
-          loadAdminGallery();
-          loadMessages();
-        } else {
-          document.getElementById("gate-err").style.display = "block";
-          document.getElementById("gate-input").value = "";
+      const { createClient } = supabase;
+      const sb = createClient(SUPABASE_URL, ANON_KEY);
+
+      // ── AUTH ──────────────────────────────────────────────────────
+      async function init() {
+        const {
+          data: { session },
+        } = await sb.auth.getSession();
+        if (session) showAdmin(session.user);
+        else document.getElementById("login-page").style.display = "flex";
+        sb.auth.onAuthStateChange((_e, s) => {
+          if (!s) showLogin();
+        });
+      }
+
+      async function doLogin() {
+        const email = document.getElementById("login-email").value.trim();
+        const pass = document.getElementById("login-password").value;
+        const btn = document.getElementById("login-btn");
+        const err = document.getElementById("login-err");
+        err.style.display = "none";
+        if (!email || !pass) {
+          showErr("Veuillez remplir tous les champs.");
+          return;
         }
-      }
-
-      // ── HELPERS ─────────────────────────────────────────────
-      function api(path, opts = {}, useSecret = false) {
-        const key = useSecret ? SECRET_KEY : ANON_KEY;
-        return fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
-          ...opts,
-          headers: {
-            apikey: key,
-            Authorization: `Bearer ${key}`,
-            "Content-Type": "application/json",
-            Prefer: "return=representation",
-            ...(opts.headers || {}),
-          },
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spin"></span> Connexion…';
+        const { data, error } = await sb.auth.signInWithPassword({
+          email,
+          password: pass,
         });
+        if (error) {
+          showErr("Identifiants incorrects. Veuillez réessayer.");
+          btn.disabled = false;
+          btn.textContent = "Se connecter";
+          return;
+        }
+        showAdmin(data.user);
       }
 
-      function storageApi(path, opts = {}) {
-        return fetch(`${SUPABASE_URL}/storage/v1/${path}`, {
-          ...opts,
-          headers: {
-            apikey: ANON_KEY,
-            Authorization: `Bearer ${ANON_KEY}`,
-            ...(opts.headers || {}),
-          },
-        });
+      async function doLogout() {
+        await sb.auth.signOut();
+        showLogin();
       }
 
-      function toast(msg, type = "success") {
+      function showLogin() {
+        document.getElementById("admin-page").style.display = "none";
+        document.getElementById("login-page").style.display = "flex";
+        document.getElementById("login-password").value = "";
+      }
+      function showAdmin(user) {
+        document.getElementById("login-page").style.display = "none";
+        document.getElementById("admin-page").style.display = "block";
+        document.getElementById("admin-email-display").textContent =
+          user?.email || "";
+        loadGalleryAdmin();
+        loadMessages();
+      }
+      function showErr(msg) {
+        const e = document.getElementById("login-err");
+        e.textContent = msg;
+        e.style.display = "block";
+      }
+
+      // ── TABS ──────────────────────────────────────────────────────
+      function switchTab(tab, btn) {
+        document
+          .querySelectorAll(".tab-panel")
+          .forEach((p) => p.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById("panel-" + tab).classList.add("active");
+        btn.classList.add("active");
+      }
+
+      // ── UTILS ─────────────────────────────────────────────────────
+      function toast(msg, type = "ok") {
         const t = document.getElementById("toast");
         t.textContent = msg;
         t.className = type;
         t.style.display = "flex";
-        clearTimeout(t._timer);
-        t._timer = setTimeout(() => {
+        clearTimeout(t._t);
+        t._t = setTimeout(() => {
           t.style.display = "none";
         }, 3800);
       }
-
-      function formatDate(iso) {
-        const d = new Date(iso);
+      function esc(s) {
+        const d = document.createElement("div");
+        d.appendChild(document.createTextNode(String(s)));
+        return d.innerHTML;
+      }
+      function escA(s) {
+        return String(s).replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+      }
+      function fmtDate(iso) {
         return (
-          d.toLocaleDateString("en-MU", {
+          new Date(iso).toLocaleDateString("fr-MU", {
             day: "2-digit",
             month: "short",
             year: "numeric",
           }) +
           " " +
-          d.toLocaleTimeString("en-MU", { hour: "2-digit", minute: "2-digit" })
+          new Date(iso).toLocaleTimeString("fr-MU", {
+            hour: "2-digit",
+            minute: "2-digit",
+          })
         );
       }
 
-      // ── FILE HANDLING ────────────────────────────────────────
-      let pendingFiles = [];
-
-      function handleDragOver(e) {
+      // ── FILES ─────────────────────────────────────────────────────
+      let pending = [];
+      function onDragOver(e) {
         e.preventDefault();
         document.getElementById("drop-zone").classList.add("dragover");
       }
-      function handleDragLeave(e) {
+      function onDragLeave() {
         document.getElementById("drop-zone").classList.remove("dragover");
       }
-      function handleDrop(e) {
+      function onDrop(e) {
         e.preventDefault();
-        document.getElementById("drop-zone").classList.remove("dragover");
-        handleFiles(e.dataTransfer.files);
+        onDragLeave();
+        onFiles(e.dataTransfer.files);
       }
-
-      function handleFiles(files) {
+      function onFiles(files) {
         Array.from(files).forEach((file) => {
           if (!file.type.startsWith("image/")) return;
           if (file.size > 10 * 1024 * 1024) {
-            toast(`${file.name} exceeds 10 MB limit`, "error");
+            toast(file.name + " dépasse 10 Mo", "err");
             return;
           }
-          const idx = pendingFiles.length;
-          pendingFiles.push({
+          const idx = pending.length;
+          pending.push({
             file,
             title: file.name.replace(/\.[^.]+$/, ""),
             description: "",
           });
-          renderPreviewCard(idx, file);
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const c = document.createElement("div");
+            c.className = "preview-card";
+            c.id = "pc-" + idx;
+            c.innerHTML = `<div class="preview-img"><img src="${e.target.result}" /></div>
+        <div class="preview-body">
+          <input class="preview-field" type="text" placeholder="Titre" value="${escA(pending[idx].title)}" oninput="pending[${idx}].title=this.value" />
+          <input class="preview-field" type="text" placeholder="Description (optionnel)" oninput="pending[${idx}].description=this.value" />
+          <button class="preview-rm" onclick="removePreview(${idx})">✕ Retirer</button>
+        </div>`;
+            document.getElementById("preview-list").appendChild(c);
+          };
+          reader.readAsDataURL(file);
         });
-        const btn = document.getElementById("upload-btn");
-        btn.style.display = pendingFiles.length > 0 ? "inline-flex" : "none";
+        document.getElementById("upload-btn").style.display = pending.filter(
+          Boolean,
+        ).length
+          ? "inline-flex"
+          : "none";
       }
-
-      function renderPreviewCard(idx, file) {
-        const list = document.getElementById("preview-list");
-        const reader = new FileReader();
-        reader.onload = (e) => {
-          const card = document.createElement("div");
-          card.className = "preview-card";
-          card.id = `pc-${idx}`;
-          card.innerHTML = `
-            <div class="preview-img-wrap"><img src="${e.target.result}" alt="" /></div>
-            <div class="preview-body">
-              <input class="preview-field" type="text" placeholder="Title"
-                value="${pendingFiles[idx].title}"
-                oninput="pendingFiles[${idx}].title = this.value" />
-              <input class="preview-field" type="text" placeholder="Description (optional)"
-                oninput="pendingFiles[${idx}].description = this.value" />
-              <button class="preview-remove" onclick="removePreview(${idx})">✕ Remove</button>
-            </div>`;
-          list.appendChild(card);
-        };
-        reader.readAsDataURL(file);
-      }
-
       function removePreview(idx) {
-        pendingFiles[idx] = null;
-        const card = document.getElementById(`pc-${idx}`);
-        if (card) card.remove();
-        const remaining = pendingFiles.filter(Boolean);
-        if (remaining.length === 0) {
+        pending[idx] = null;
+        const c = document.getElementById("pc-" + idx);
+        if (c) c.remove();
+        if (!pending.filter(Boolean).length) {
+          pending = [];
           document.getElementById("upload-btn").style.display = "none";
-          pendingFiles = [];
         }
       }
 
-      // ── UPLOAD ───────────────────────────────────────────────
+      // ── UPLOAD ────────────────────────────────────────────────────
       async function uploadAll() {
-        const toUpload = pendingFiles.filter(Boolean);
-        if (!toUpload.length) return;
-
-        const btn = document.getElementById("upload-btn");
-        const progWrap = document.getElementById("progress-wrap");
-        const progBar = document.getElementById("progress-bar");
-
+        const toUp = pending.filter(Boolean);
+        if (!toUp.length) return;
+        const btn = document.getElementById("upload-btn"),
+          pw = document.getElementById("prog-wrap"),
+          pb = document.getElementById("prog-bar");
         btn.disabled = true;
-        btn.textContent = "Uploading…";
-        progWrap.style.display = "block";
-
+        btn.innerHTML = '<span class="spin"></span> Upload en cours…';
+        pw.style.display = "block";
         let done = 0;
-        for (const item of toUpload) {
+        for (const item of toUp) {
           try {
-            await uploadSingle(item);
+            await uploadOne(item);
             done++;
-            progBar.style.width = `${Math.round((done / toUpload.length) * 100)}%`;
+            pb.style.width = `${Math.round((done / toUp.length) * 100)}%`;
           } catch (err) {
-            toast(`Failed: ${item.file.name} — ${err.message}`, "error");
+            toast("Échec : " + item.file.name + " — " + err.message, "err");
           }
         }
-
-        // Reset
-        pendingFiles = [];
+        pending = [];
         document.getElementById("preview-list").innerHTML = "";
         btn.style.display = "none";
         btn.disabled = false;
-        btn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> Upload to Gallery`;
+        btn.innerHTML =
+          '<svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/></svg> Uploader dans la galerie';
         setTimeout(() => {
-          progWrap.style.display = "none";
-          progBar.style.width = "0%";
-        }, 800);
-
-        toast(`${done} image${done > 1 ? "s" : ""} uploaded successfully!`);
-        loadAdminGallery();
+          pw.style.display = "none";
+          pb.style.width = "0%";
+        }, 700);
+        if (done > 0) {
+          toast(
+            `${done} image${done > 1 ? "s" : ""} uploadée${done > 1 ? "s" : ""}!`,
+          );
+          loadGalleryAdmin();
+        }
       }
 
-      async function uploadSingle({ file, title, description }) {
-        // 1. Upload file to Supabase Storage
+      async function uploadOne({ file, title, description }) {
         const ext = file.name.split(".").pop();
-        const filename = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
-
-        const uploadRes = await storageApi(`object/${BUCKET}/${filename}`, {
-          method: "POST",
-          headers: { "Content-Type": file.type },
-          body: file,
-        });
-        if (!uploadRes.ok) {
-          const err = await uploadRes.json().catch(() => ({}));
-          throw new Error(err.message || uploadRes.statusText);
-        }
-
-        // 2. Get public URL
-        const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${filename}`;
-
-        // 3. Get next display_order
-        const countRes = await api(
-          "gallery_images?select=display_order&order=display_order.desc&limit=1",
-        );
-        const countData = await countRes.json();
-        const nextOrder =
-          countData.length > 0 ? countData[0].display_order + 1 : 1;
-
-        // 4. Insert record into gallery_images
-        const insertRes = await api("gallery_images", {
-          method: "POST",
-          body: JSON.stringify({
-            title: title || filename,
+        const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+        const { error: upErr } = await sb.storage
+          .from(BUCKET)
+          .upload(path, file, { contentType: file.type });
+        if (upErr) throw upErr;
+        const {
+          data: { publicUrl },
+        } = sb.storage.from(BUCKET).getPublicUrl(path);
+        const { data: last } = await sb
+          .from("gallery_images")
+          .select("display_order")
+          .order("display_order", { ascending: false })
+          .limit(1);
+        const nextOrder = last?.length ? last[0].display_order + 1 : 1;
+        const { error: insErr } = await sb
+          .from("gallery_images")
+          .insert({
+            title: title || path,
             description: description || "",
             image_url: publicUrl,
-            storage_path: filename,
+            storage_path: path,
             display_order: nextOrder,
             is_active: true,
-          }),
-        });
-        if (!insertRes.ok) {
-          const err = await insertRes.json().catch(() => ({}));
-          throw new Error(err.message || insertRes.statusText);
-        }
+          });
+        if (insErr) throw insErr;
       }
 
-      // ── ADMIN GALLERY LOAD ───────────────────────────────────
-      let galleryData = [];
+      // ── GALERIE ADMIN ─────────────────────────────────────────────
       let dragSrc = null;
-
-      async function loadAdminGallery() {
+      async function loadGalleryAdmin() {
         const grid = document.getElementById("gallery-admin-grid");
-        grid.innerHTML = `
-          <div class="skeleton" style="height:220px;border-radius:6px;"></div>
-          <div class="skeleton" style="height:220px;border-radius:6px;"></div>
-          <div class="skeleton" style="height:220px;border-radius:6px;"></div>`;
-
-        const res = await api(
-          "gallery_images?select=*&order=display_order.asc",
-        );
-        galleryData = await res.json();
-
-        document.getElementById("img-count").textContent = galleryData.length;
-
-        if (!galleryData.length) {
-          grid.innerHTML = `
-            <div class="empty-state" style="grid-column:1/-1;">
-              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              <p>No images yet — upload some above!</p>
-            </div>`;
+        grid.innerHTML =
+          '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
+        const { data, error } = await sb
+          .from("gallery_images")
+          .select("*")
+          .order("display_order", { ascending: true });
+        if (error) {
+          toast("Erreur de chargement", "err");
           return;
         }
-
+        const imgs = data || [];
+        document.getElementById("img-count").textContent = imgs.length;
+        if (!imgs.length) {
+          grid.innerHTML =
+            '<div class="empty"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p>Aucune image — uploadez en ci-dessus !</p></div>';
+          return;
+        }
         grid.innerHTML = "";
-        galleryData.forEach((img, i) => {
-          const card = document.createElement("div");
-          card.className = "admin-card";
-          card.draggable = true;
-          card.dataset.id = img.id;
-          card.dataset.order = img.display_order;
-          card.innerHTML = `
-            <div class="admin-img-wrap">
-              <img src="${img.image_url}" alt="${img.title}" loading="lazy" />
-              <div class="admin-order-badge">#${i + 1}</div>
-            </div>
-            <div class="admin-card-body">
-              <div class="admin-card-title">${img.title || "Untitled"}</div>
-              <div class="admin-card-desc">${img.description || "—"}</div>
-              <div class="admin-card-actions">
-                <button class="btn-toggle ${img.is_active ? "active" : "inactive"}"
-                  onclick="toggleActive('${img.id}', ${img.is_active})">
-                  ${img.is_active ? "✓ Visible" : "✕ Hidden"}
-                </button>
-                <button class="btn-delete" title="Delete" onclick="deleteImage('${img.id}','${img.storage_path}')">
-                  <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
-                </button>
-              </div>
-            </div>`;
-          // Drag events
-          card.addEventListener("dragstart", (e) => {
-            dragSrc = card;
-            card.classList.add("dragging");
+        imgs.forEach((img, i) => {
+          const c = document.createElement("div");
+          c.className = "admin-card";
+          c.draggable = true;
+          c.dataset.id = img.id;
+          c.innerHTML = `<div class="adm-img"><img src="${escA(img.image_url)}" alt="${esc(img.title)}" loading="lazy"/><div class="order-badge">#${i + 1}</div></div>
+      <div class="adm-body">
+        <div class="adm-title">${esc(img.title || "Sans titre")}</div>
+        <div class="adm-desc">${esc(img.description || "—")}</div>
+        <div class="adm-actions">
+          <button class="btn-toggle ${img.is_active ? "on" : "off"}" onclick="toggleActive('${img.id}',${img.is_active})">${img.is_active ? "✓ Visible" : "✕ Masqué"}</button>
+          <button class="btn-del" onclick="deleteImage('${img.id}','${escA(img.storage_path)}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
+        </div>
+      </div>`;
+          c.addEventListener("dragstart", (e) => {
+            dragSrc = c;
+            c.classList.add("dragging");
             e.dataTransfer.effectAllowed = "move";
           });
-          card.addEventListener("dragend", () =>
-            card.classList.remove("dragging"),
-          );
-          card.addEventListener("dragover", (e) => {
+          c.addEventListener("dragend", () => c.classList.remove("dragging"));
+          c.addEventListener("dragover", (e) => {
             e.preventDefault();
-            card.classList.add("drag-over");
+            c.classList.add("drag-over");
           });
-          card.addEventListener("dragleave", () =>
-            card.classList.remove("drag-over"),
+          c.addEventListener("dragleave", () =>
+            c.classList.remove("drag-over"),
           );
-          card.addEventListener("drop", (e) => {
+          c.addEventListener("drop", (e) => {
             e.preventDefault();
-            card.classList.remove("drag-over");
-            if (dragSrc !== card) reorderCards(dragSrc, card);
+            c.classList.remove("drag-over");
+            if (dragSrc !== c) reorder(dragSrc, c);
           });
-          grid.appendChild(card);
+          grid.appendChild(c);
         });
       }
 
-      async function reorderCards(srcCard, targetCard) {
+      async function reorder(src, target) {
         const grid = document.getElementById("gallery-admin-grid");
         const cards = [...grid.querySelectorAll(".admin-card")];
-        const si = cards.indexOf(srcCard);
-        const ti = cards.indexOf(targetCard);
-        if (si < ti) grid.insertBefore(srcCard, targetCard.nextSibling);
-        else grid.insertBefore(srcCard, targetCard);
-
-        // Persist new order
-        const newOrder = [...grid.querySelectorAll(".admin-card")].map(
-          (c, i) => ({ id: c.dataset.id, display_order: i + 1 }),
+        const si = cards.indexOf(src),
+          ti = cards.indexOf(target);
+        grid.insertBefore(src, si < ti ? target.nextSibling : target);
+        const updates = [...grid.querySelectorAll(".admin-card")].map((c, i) =>
+          sb
+            .from("gallery_images")
+            .update({ display_order: i + 1 })
+            .eq("id", c.dataset.id),
         );
-        for (const row of newOrder) {
-          await api(`gallery_images?id=eq.${row.id}`, {
-            method: "PATCH",
-            body: JSON.stringify({ display_order: row.display_order }),
-          });
-        }
-        toast("Order saved!");
-        loadAdminGallery();
+        await Promise.all(updates);
+        toast("Ordre sauvegardé !");
+        loadGalleryAdmin();
       }
 
       async function toggleActive(id, current) {
-        await api(`gallery_images?id=eq.${id}`, {
-          method: "PATCH",
-          body: JSON.stringify({ is_active: !current }),
-        });
-        toast(!current ? "Image set to visible" : "Image hidden from website");
-        loadAdminGallery();
+        const { error } = await sb
+          .from("gallery_images")
+          .update({ is_active: !current })
+          .eq("id", id);
+        if (error) {
+          toast("Erreur", "err");
+          return;
+        }
+        toast(!current ? "Image rendue visible" : "Image masquée du site");
+        loadGalleryAdmin();
       }
 
       async function deleteImage(id, storagePath) {
-        if (!confirm("Delete this image? This cannot be undone.")) return;
-        // Delete from storage
-        await storageApi(`object/${BUCKET}/${storagePath}`, {
-          method: "DELETE",
-        });
-        // Delete from DB
-        await api(`gallery_images?id=eq.${id}`, { method: "DELETE" });
-        toast("Image deleted");
-        loadAdminGallery();
+        if (!confirm("Supprimer cette image ? Action irréversible.")) return;
+        await sb.storage.from(BUCKET).remove([storagePath]);
+        const { error } = await sb.from("gallery_images").delete().eq("id", id);
+        if (error) {
+          toast("Erreur de suppression", "err");
+          return;
+        }
+        toast("Image supprimée");
+        loadGalleryAdmin();
       }
 
-      // ── MESSAGES ────────────────────────────────────────────
+      // ── MESSAGES ─────────────────────────────────────────────────
       async function loadMessages() {
         const tbody = document.getElementById("msg-tbody");
         tbody.innerHTML =
-          '<tr><td colspan="7" style="text-align:center;color:var(--text-mid);padding:32px;">Loading…</td></tr>';
-
-        const res = await api(
-          "contact_messages?select=*&order=created_at.desc",
-          {},
-          true,
-        );
-        const data = await res.json();
-
-        document.getElementById("msg-count").textContent = data.length;
-        document.getElementById("unread-count").textContent =
-          data.filter((m) => !m.is_read).length + " unread";
-
-        if (!data.length) {
+          '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-mid)">Chargement…</td></tr>';
+        const { data, error } = await sb
+          .from("contact_messages")
+          .select("*")
+          .order("created_at", { ascending: false });
+        if (error) {
           tbody.innerHTML =
-            '<tr><td colspan="7" style="text-align:center;color:var(--text-mid);padding:32px;">No messages yet.</td></tr>';
+            '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--red)">Erreur de chargement. Vérifiez les politiques RLS.</td></tr>';
           return;
         }
-
+        const total = data.length,
+          unread = data.filter((m) => !m.is_read).length;
+        document.getElementById("msg-total").textContent = total;
+        document.getElementById("msg-unread").textContent =
+          `${unread} non lu${unread > 1 ? "s" : ""}`;
+        const badge = document.getElementById("unread-badge");
+        badge.textContent = unread;
+        badge.style.display = unread > 0 ? "inline" : "none";
+        if (!total) {
+          tbody.innerHTML =
+            '<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-mid)">Aucun message pour le moment.</td></tr>';
+          return;
+        }
         tbody.innerHTML = "";
         data.forEach((msg) => {
           const tr = document.createElement("tr");
           if (!msg.is_read) tr.classList.add("unread");
           tr.innerHTML = `
-            <td style="white-space:nowrap;font-size:.78rem;color:var(--text-mid);">${formatDate(msg.created_at)}</td>
-            <td>
-              ${!msg.is_read ? '<span class="unread-dot"></span>' : ""}
-              ${escHtml(msg.first_name)} ${escHtml(msg.last_name)}
-            </td>
-            <td><a href="mailto:${escHtml(msg.email)}" style="color:var(--teal-mid);">${escHtml(msg.email)}</a></td>
-            <td style="font-size:.83rem;">${escHtml(msg.phone || "—")}</td>
-            <td><span class="msg-type">${escHtml(msg.enquiry_type || "other")}</span></td>
-            <td style="max-width:260px;font-size:.83rem;color:var(--text-mid);">${escHtml(msg.message || "—").slice(0, 120)}${(msg.message || "").length > 120 ? "…" : ""}</td>
-            <td>
-              ${!msg.is_read ? `<button class="btn-mark-read" onclick="markRead('${msg.id}')">Mark read</button>` : '<span style="font-size:.75rem;color:var(--text-mid);">Read ✓</span>'}
-            </td>`;
+      <td style="white-space:nowrap;font-size:.77rem;color:var(--text-mid)">${fmtDate(msg.created_at)}</td>
+      <td>${!msg.is_read ? '<span class="unread-dot"></span>' : ""}${esc(msg.first_name)}</td>
+      <td>${esc(msg.last_name || "—")}</td>
+      <td><a href="mailto:${escA(msg.email)}" style="color:var(--teal-mid)">${esc(msg.email)}</a></td>
+      <td style="font-size:.82rem">${esc(msg.phone || "—")}</td>
+      <td><span class="msg-type">${esc(msg.enquiry_type || "autre")}</span></td>
+      <td style="max-width:240px;font-size:.82rem;color:var(--text-mid)">${esc((msg.message || "—").slice(0, 100))}${(msg.message || "").length > 100 ? "…" : ""}</td>
+      <td>${!msg.is_read ? `<button class="btn-mark" onclick="markRead('${msg.id}')">Marquer lu</button>` : '<span class="read-ok">Lu ✓</span>'}</td>`;
           tbody.appendChild(tr);
         });
       }
 
       async function markRead(id) {
-        await api(
-          `contact_messages?id=eq.${id}`,
-          {
-            method: "PATCH",
-            body: JSON.stringify({ is_read: true }),
-          },
-          true,
-        );
+        await sb
+          .from("contact_messages")
+          .update({ is_read: true })
+          .eq("id", id);
         loadMessages();
       }
 
-      function escHtml(str) {
-        const d = document.createElement("div");
-        d.appendChild(document.createTextNode(String(str)));
-        return d.innerHTML;
-      }
+      init();
     </script>
   </body>
 </html>
