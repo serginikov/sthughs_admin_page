@@ -1,0 +1,1318 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gallery Manager — St Hugh's Anglican Home</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* ── VARIABLES ── */
+      :root {
+        --teal: #124848;
+        --teal-mid: #1b6b6b;
+        --teal-light: #2a9090;
+        --gold: #b8963e;
+        --gold-light: #d4af6a;
+        --cream: #faf8f4;
+        --beige: #f0ebe0;
+        --beige-dark: #d8caaf;
+        --red: #c0392b;
+        --red-light: #e74c3c;
+        --green: #27ae60;
+        --text: #0f2a2a;
+        --text-mid: #4a6868;
+        --white: #ffffff;
+        --shadow: 0 4px 24px rgba(18, 72, 72, 0.12);
+        --shadow-lg: 0 12px 48px rgba(18, 72, 72, 0.18);
+        --radius: 6px;
+      }
+
+      /* ── RESET ── */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      body {
+        font-family: "Jost", sans-serif;
+        background: var(--cream);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      /* ── GATE ── */
+      #gate {
+        position: fixed;
+        inset: 0;
+        z-index: 9999;
+        background: var(--teal);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .gate-box {
+        background: var(--white);
+        border-radius: var(--radius);
+        padding: 48px 44px;
+        width: min(400px, 92vw);
+        text-align: center;
+        box-shadow: var(--shadow-lg);
+      }
+      .gate-box h1 {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.9rem;
+        color: var(--teal);
+        margin-bottom: 6px;
+      }
+      .gate-box p {
+        font-size: 0.85rem;
+        color: var(--text-mid);
+        margin-bottom: 28px;
+      }
+      .gate-input {
+        width: 100%;
+        padding: 12px 16px;
+        border: 1.5px solid var(--beige-dark);
+        border-radius: 4px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.95rem;
+        color: var(--text);
+        background: var(--cream);
+        outline: none;
+        margin-bottom: 14px;
+        text-align: center;
+        letter-spacing: 0.2em;
+      }
+      .gate-input:focus {
+        border-color: var(--teal-light);
+      }
+      .gate-btn {
+        width: 100%;
+        padding: 13px;
+        background: var(--teal);
+        color: var(--gold-light);
+        font-family: "Jost", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .gate-btn:hover {
+        background: var(--teal-mid);
+      }
+      .gate-err {
+        font-size: 0.82rem;
+        color: var(--red);
+        margin-top: 10px;
+        display: none;
+      }
+
+      /* ── HEADER ── */
+      header {
+        background: var(--teal);
+        padding: 18px 0;
+        border-bottom: 2px solid rgba(184, 150, 62, 0.3);
+      }
+      .hdr-inner {
+        width: min(1200px, 94vw);
+        margin: 0 auto;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+      }
+      .hdr-brand {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+      .hdr-brand-text strong {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.2rem;
+        color: var(--white);
+        display: block;
+      }
+      .hdr-brand-text span {
+        font-size: 0.68rem;
+        letter-spacing: 0.14em;
+        text-transform: uppercase;
+        color: var(--gold-light);
+        opacity: 0.8;
+      }
+      .hdr-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        background: rgba(184, 150, 62, 0.15);
+        border: 1px solid rgba(184, 150, 62, 0.35);
+        border-radius: 20px;
+        padding: 5px 14px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--gold-light);
+      }
+      .hdr-badge .dot {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: #4ade80;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.6);
+        }
+        50% {
+          box-shadow: 0 0 0 5px rgba(74, 222, 128, 0);
+        }
+      }
+
+      /* ── LAYOUT ── */
+      main {
+        width: min(1200px, 94vw);
+        margin: 0 auto;
+        padding: 44px 0 80px;
+      }
+      .section-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: var(--teal);
+        margin-bottom: 6px;
+      }
+      .section-sub {
+        font-size: 0.88rem;
+        color: var(--text-mid);
+        margin-bottom: 28px;
+      }
+
+      /* ── UPLOAD ZONE ── */
+      .upload-section {
+        background: var(--white);
+        border: 1px solid var(--beige-dark);
+        border-radius: var(--radius);
+        padding: 36px;
+        margin-bottom: 48px;
+        box-shadow: var(--shadow);
+      }
+      .drop-zone {
+        border: 2.5px dashed var(--beige-dark);
+        border-radius: var(--radius);
+        padding: 52px 24px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.25s;
+        background: var(--cream);
+        position: relative;
+      }
+      .drop-zone.dragover {
+        border-color: var(--teal-light);
+        background: rgba(42, 144, 144, 0.05);
+        transform: scale(1.01);
+      }
+      .drop-zone input[type="file"] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+      .drop-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: var(--beige);
+        border: 2px solid var(--beige-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 16px;
+      }
+      .drop-icon svg {
+        width: 26px;
+        height: 26px;
+        stroke: var(--teal-mid);
+        fill: none;
+        stroke-width: 1.5;
+      }
+      .drop-zone h3 {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.3rem;
+        color: var(--teal);
+        margin-bottom: 6px;
+      }
+      .drop-zone p {
+        font-size: 0.84rem;
+        color: var(--text-mid);
+      }
+      .drop-zone p span {
+        color: var(--teal-light);
+        font-weight: 500;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+
+      /* Previews */
+      #preview-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+        margin-top: 24px;
+      }
+      .preview-card {
+        border: 1px solid var(--beige-dark);
+        border-radius: var(--radius);
+        overflow: hidden;
+        background: var(--cream);
+      }
+      .preview-img-wrap {
+        aspect-ratio: 4/3;
+        overflow: hidden;
+        background: var(--beige);
+      }
+      .preview-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .preview-body {
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .preview-field {
+        width: 100%;
+        padding: 8px 10px;
+        border: 1px solid var(--beige-dark);
+        border-radius: 3px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.83rem;
+        color: var(--text);
+        background: var(--white);
+        outline: none;
+      }
+      .preview-field:focus {
+        border-color: var(--teal-light);
+      }
+      .preview-remove {
+        width: 100%;
+        padding: 7px;
+        background: transparent;
+        border: 1px solid var(--beige-dark);
+        border-radius: 3px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: var(--red);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .preview-remove:hover {
+        background: var(--red);
+        color: var(--white);
+        border-color: var(--red);
+      }
+
+      /* Upload button */
+      #upload-btn {
+        display: none;
+        margin-top: 20px;
+        padding: 13px 36px;
+        background: var(--teal);
+        color: var(--gold-light);
+        font-family: "Jost", sans-serif;
+        font-size: 0.82rem;
+        font-weight: 600;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition:
+          background 0.2s,
+          transform 0.2s;
+        align-items: center;
+        gap: 10px;
+      }
+      #upload-btn:hover {
+        background: var(--teal-mid);
+        transform: translateY(-1px);
+      }
+      #upload-btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        transform: none;
+      }
+      #upload-btn svg {
+        width: 16px;
+        height: 16px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+
+      /* Progress */
+      .progress-bar-wrap {
+        display: none;
+        margin-top: 14px;
+        height: 6px;
+        background: var(--beige-dark);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+      .progress-bar {
+        height: 100%;
+        background: linear-gradient(90deg, var(--teal-light), var(--gold));
+        border-radius: 3px;
+        width: 0%;
+        transition: width 0.3s;
+      }
+
+      /* Toast */
+      #toast {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 8000;
+        padding: 13px 26px;
+        border-radius: 4px;
+        font-size: 0.87rem;
+        font-weight: 500;
+        color: var(--white);
+        display: none;
+        align-items: center;
+        gap: 9px;
+        box-shadow: var(--shadow-lg);
+        white-space: nowrap;
+      }
+      #toast.success {
+        background: var(--green);
+      }
+      #toast.error {
+        background: var(--red);
+      }
+      #toast svg {
+        width: 16px;
+        height: 16px;
+        fill: currentColor;
+      }
+
+      /* ── GALLERY MANAGER ── */
+      .gallery-manager {
+        background: var(--white);
+        border: 1px solid var(--beige-dark);
+        border-radius: var(--radius);
+        padding: 36px;
+        box-shadow: var(--shadow);
+      }
+      .mgr-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-bottom: 28px;
+      }
+      .mgr-info {
+        font-size: 0.84rem;
+        color: var(--text-mid);
+      }
+      .mgr-info span {
+        font-weight: 600;
+        color: var(--teal);
+      }
+      .mgr-refresh {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        padding: 8px 18px;
+        background: var(--cream);
+        border: 1px solid var(--beige-dark);
+        border-radius: 4px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: var(--text-mid);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .mgr-refresh:hover {
+        background: var(--beige);
+        color: var(--teal);
+      }
+      .mgr-refresh svg {
+        width: 14px;
+        height: 14px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+
+      /* Gallery grid (admin) */
+      #gallery-admin-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 18px;
+      }
+      .admin-card {
+        border: 1px solid var(--beige-dark);
+        border-radius: var(--radius);
+        overflow: hidden;
+        background: var(--cream);
+        transition:
+          box-shadow 0.25s,
+          transform 0.25s;
+        cursor: grab;
+      }
+      .admin-card:hover {
+        box-shadow: var(--shadow);
+        transform: translateY(-3px);
+      }
+      .admin-card.dragging {
+        opacity: 0.4;
+        cursor: grabbing;
+      }
+      .admin-card.drag-over {
+        border-color: var(--teal-light);
+        box-shadow: 0 0 0 2px var(--teal-light);
+      }
+      .admin-img-wrap {
+        aspect-ratio: 4/3;
+        overflow: hidden;
+        background: var(--beige);
+        position: relative;
+      }
+      .admin-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.4s;
+      }
+      .admin-card:hover .admin-img-wrap img {
+        transform: scale(1.04);
+      }
+      .admin-order-badge {
+        position: absolute;
+        top: 8px;
+        left: 8px;
+        background: rgba(18, 72, 72, 0.85);
+        color: var(--gold-light);
+        font-size: 0.7rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        padding: 3px 9px;
+        border-radius: 2px;
+      }
+      .admin-card-body {
+        padding: 12px;
+      }
+      .admin-card-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--teal);
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .admin-card-desc {
+        font-size: 0.78rem;
+        color: var(--text-mid);
+        margin-bottom: 10px;
+        line-height: 1.5;
+        min-height: 1.5em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .admin-card-actions {
+        display: flex;
+        gap: 8px;
+      }
+      .btn-toggle {
+        flex: 1;
+        padding: 6px 8px;
+        border-radius: 3px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.74rem;
+        font-weight: 500;
+        cursor: pointer;
+        border: 1px solid;
+        transition: all 0.2s;
+      }
+      .btn-toggle.active {
+        background: rgba(39, 174, 96, 0.1);
+        border-color: var(--green);
+        color: var(--green);
+      }
+      .btn-toggle.inactive {
+        background: rgba(192, 57, 43, 0.07);
+        border-color: var(--red-light);
+        color: var(--red);
+      }
+      .btn-delete {
+        padding: 6px 10px;
+        border: 1px solid var(--beige-dark);
+        border-radius: 3px;
+        background: transparent;
+        color: var(--text-mid);
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+      }
+      .btn-delete:hover {
+        background: var(--red);
+        border-color: var(--red);
+        color: var(--white);
+      }
+      .btn-delete svg {
+        width: 13px;
+        height: 13px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+      }
+
+      /* Empty state */
+      .empty-state {
+        text-align: center;
+        padding: 52px 24px;
+        color: var(--text-mid);
+      }
+      .empty-state svg {
+        width: 48px;
+        height: 48px;
+        stroke: var(--beige-dark);
+        fill: none;
+        stroke-width: 1.2;
+        margin: 0 auto 14px;
+        display: block;
+      }
+      .empty-state p {
+        font-size: 0.9rem;
+      }
+
+      /* Loading skeleton */
+      .skeleton {
+        background: linear-gradient(
+          90deg,
+          var(--beige) 25%,
+          var(--beige-dark) 50%,
+          var(--beige) 75%
+        );
+        background-size: 200% 100%;
+        animation: shimmer 1.4s infinite;
+        border-radius: 4px;
+      }
+      @keyframes shimmer {
+        0% {
+          background-position: 200% 0;
+        }
+        100% {
+          background-position: -200% 0;
+        }
+      }
+
+      /* ── MESSAGES SECTION ── */
+      .messages-section {
+        background: var(--white);
+        border: 1px solid var(--beige-dark);
+        border-radius: var(--radius);
+        padding: 36px;
+        margin-top: 48px;
+        box-shadow: var(--shadow);
+      }
+      .msg-table-wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.87rem;
+      }
+      thead tr {
+        background: var(--beige);
+        border-bottom: 2px solid var(--beige-dark);
+      }
+      th {
+        padding: 11px 14px;
+        text-align: left;
+        font-size: 0.72rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-mid);
+      }
+      tbody tr {
+        border-bottom: 1px solid var(--beige);
+        transition: background 0.15s;
+      }
+      tbody tr:hover {
+        background: var(--cream);
+      }
+      tbody tr.unread {
+        background: rgba(27, 107, 107, 0.04);
+      }
+      td {
+        padding: 11px 14px;
+        color: var(--text);
+        vertical-align: top;
+      }
+      td .unread-dot {
+        display: inline-block;
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--teal-light);
+        margin-right: 7px;
+        vertical-align: middle;
+        flex-shrink: 0;
+      }
+      .msg-type {
+        display: inline-block;
+        padding: 2px 9px;
+        border-radius: 20px;
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        background: var(--beige);
+        color: var(--text-mid);
+      }
+      .btn-mark-read {
+        padding: 5px 10px;
+        background: transparent;
+        border: 1px solid var(--beige-dark);
+        border-radius: 3px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.74rem;
+        cursor: pointer;
+        color: var(--text-mid);
+        transition: all 0.2s;
+        white-space: nowrap;
+      }
+      .btn-mark-read:hover {
+        background: var(--teal);
+        border-color: var(--teal);
+        color: var(--white);
+      }
+
+      @media (max-width: 640px) {
+        .hdr-badge {
+          display: none;
+        }
+        .upload-section,
+        .gallery-manager,
+        .messages-section {
+          padding: 22px 18px;
+        }
+        .drop-zone {
+          padding: 36px 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- PASSWORD GATE -->
+    <div id="gate">
+      <div class="gate-box">
+        <h1>Gallery Manager</h1>
+        <p>St Hugh's Anglican Home — Admin Access</p>
+        <input
+          type="password"
+          id="gate-input"
+          class="gate-input"
+          placeholder="Enter admin password"
+          onkeydown="if (event.key === 'Enter') checkPassword();"
+        />
+        <button class="gate-btn" onclick="checkPassword()">Enter</button>
+        <p class="gate-err" id="gate-err">
+          Incorrect password. Please try again.
+        </p>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <header>
+      <div class="hdr-inner">
+        <div class="hdr-brand">
+          <div class="hdr-brand-text">
+            <strong>St Hugh's Anglican Home</strong>
+            <span>Gallery Manager — Admin</span>
+          </div>
+        </div>
+        <div class="hdr-badge">
+          <span class="dot"></span> Connected to Supabase
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <main>
+      <!-- ── UPLOAD SECTION ── -->
+      <div class="upload-section">
+        <h2 class="section-title">Upload New Images</h2>
+        <p class="section-sub">
+          Drag &amp; drop images below, add a title and description, then click
+          Upload.
+        </p>
+
+        <div
+          class="drop-zone"
+          id="drop-zone"
+          ondragover="handleDragOver(event)"
+          ondragleave="handleDragLeave(event)"
+          ondrop="handleDrop(event)"
+        >
+          <input
+            type="file"
+            id="file-input"
+            multiple
+            accept="image/jpeg,image/png,image/webp,image/gif"
+            onchange="handleFiles(this.files)"
+          />
+          <div class="drop-icon">
+            <svg viewBox="0 0 24 24">
+              <polyline points="16 16 12 12 8 16" />
+              <line x1="12" y1="12" x2="12" y2="21" />
+              <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+            </svg>
+          </div>
+          <h3>Drop images here</h3>
+          <p>
+            or
+            <span onclick="document.getElementById('file-input').click()"
+              >browse files</span
+            >
+            &nbsp;·&nbsp; JPEG, PNG, WebP, GIF — max 10 MB each
+          </p>
+        </div>
+
+        <div id="preview-list"></div>
+
+        <button id="upload-btn" onclick="uploadAll()">
+          <svg viewBox="0 0 24 24">
+            <polyline points="16 16 12 12 8 16" />
+            <line x1="12" y1="12" x2="12" y2="21" />
+            <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
+          </svg>
+          Upload to Gallery
+        </button>
+
+        <div class="progress-bar-wrap" id="progress-wrap">
+          <div class="progress-bar" id="progress-bar"></div>
+        </div>
+      </div>
+
+      <!-- ── GALLERY MANAGER ── -->
+      <div class="gallery-manager">
+        <div class="mgr-toolbar">
+          <div>
+            <h2 class="section-title">Manage Gallery</h2>
+            <p class="mgr-info">
+              <span id="img-count">—</span> images in database &nbsp;·&nbsp;
+              Drag cards to reorder
+            </p>
+          </div>
+          <button class="mgr-refresh" onclick="loadAdminGallery()">
+            <svg viewBox="0 0 24 24">
+              <polyline points="23 4 23 10 17 10" />
+              <polyline points="1 20 1 14 7 14" />
+              <path
+                d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+              />
+            </svg>
+            Refresh
+          </button>
+        </div>
+        <div id="gallery-admin-grid">
+          <!-- loaded by JS -->
+          <div class="skeleton" style="height: 220px; border-radius: 6px"></div>
+          <div class="skeleton" style="height: 220px; border-radius: 6px"></div>
+          <div class="skeleton" style="height: 220px; border-radius: 6px"></div>
+        </div>
+      </div>
+
+      <!-- ── MESSAGES ── -->
+      <div class="messages-section">
+        <div class="mgr-toolbar">
+          <div>
+            <h2 class="section-title">Contact Messages</h2>
+            <p class="mgr-info">
+              <span id="msg-count">—</span> messages &nbsp;·&nbsp;
+              <span id="unread-count" style="color: var(--teal)">—</span> unread
+            </p>
+          </div>
+          <button class="mgr-refresh" onclick="loadMessages()">
+            <svg viewBox="0 0 24 24">
+              <polyline points="23 4 23 10 17 10" />
+              <polyline points="1 20 1 14 7 14" />
+              <path
+                d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
+              />
+            </svg>
+            Refresh
+          </button>
+        </div>
+        <div class="msg-table-wrap">
+          <table id="msg-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Type</th>
+                <th>Message</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="msg-tbody">
+              <tr>
+                <td
+                  colspan="7"
+                  style="
+                    text-align: center;
+                    color: var(--text-mid);
+                    padding: 32px;
+                  "
+                >
+                  Loading messages…
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </main>
+
+    <!-- TOAST -->
+    <div id="toast"></div>
+
+    <script>
+      // ── CONFIG ──────────────────────────────────────────────
+      const SUPABASE_URL = "https://mgbfcznrpiwobsxxryhl.supabase.co";
+      const ANON_KEY = "sb_publishable_S9-EBPoyhWf6Biaf1jgtMQ_fi7qtH9-";
+      const SECRET_KEY = "sb_secret_VUwh6hqu296qrc2P-IfOdg_U0I4_mI9";
+      const BUCKET = "gallery";
+      const ADMIN_PASS = "admin"; // ← Change this password
+
+      // ── GATE ────────────────────────────────────────────────
+      function checkPassword() {
+        const val = document.getElementById("gate-input").value;
+        if (val === ADMIN_PASS) {
+          document.getElementById("gate").style.display = "none";
+          loadAdminGallery();
+          loadMessages();
+        } else {
+          document.getElementById("gate-err").style.display = "block";
+          document.getElementById("gate-input").value = "";
+        }
+      }
+
+      // ── HELPERS ─────────────────────────────────────────────
+      function api(path, opts = {}, useSecret = false) {
+        const key = useSecret ? SECRET_KEY : ANON_KEY;
+        return fetch(`${SUPABASE_URL}/rest/v1/${path}`, {
+          ...opts,
+          headers: {
+            apikey: key,
+            Authorization: `Bearer ${key}`,
+            "Content-Type": "application/json",
+            Prefer: "return=representation",
+            ...(opts.headers || {}),
+          },
+        });
+      }
+
+      function storageApi(path, opts = {}) {
+        return fetch(`${SUPABASE_URL}/storage/v1/${path}`, {
+          ...opts,
+          headers: {
+            apikey: ANON_KEY,
+            Authorization: `Bearer ${ANON_KEY}`,
+            ...(opts.headers || {}),
+          },
+        });
+      }
+
+      function toast(msg, type = "success") {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.className = type;
+        t.style.display = "flex";
+        clearTimeout(t._timer);
+        t._timer = setTimeout(() => {
+          t.style.display = "none";
+        }, 3800);
+      }
+
+      function formatDate(iso) {
+        const d = new Date(iso);
+        return (
+          d.toLocaleDateString("en-MU", {
+            day: "2-digit",
+            month: "short",
+            year: "numeric",
+          }) +
+          " " +
+          d.toLocaleTimeString("en-MU", { hour: "2-digit", minute: "2-digit" })
+        );
+      }
+
+      // ── FILE HANDLING ────────────────────────────────────────
+      let pendingFiles = [];
+
+      function handleDragOver(e) {
+        e.preventDefault();
+        document.getElementById("drop-zone").classList.add("dragover");
+      }
+      function handleDragLeave(e) {
+        document.getElementById("drop-zone").classList.remove("dragover");
+      }
+      function handleDrop(e) {
+        e.preventDefault();
+        document.getElementById("drop-zone").classList.remove("dragover");
+        handleFiles(e.dataTransfer.files);
+      }
+
+      function handleFiles(files) {
+        Array.from(files).forEach((file) => {
+          if (!file.type.startsWith("image/")) return;
+          if (file.size > 10 * 1024 * 1024) {
+            toast(`${file.name} exceeds 10 MB limit`, "error");
+            return;
+          }
+          const idx = pendingFiles.length;
+          pendingFiles.push({
+            file,
+            title: file.name.replace(/\.[^.]+$/, ""),
+            description: "",
+          });
+          renderPreviewCard(idx, file);
+        });
+        const btn = document.getElementById("upload-btn");
+        btn.style.display = pendingFiles.length > 0 ? "inline-flex" : "none";
+      }
+
+      function renderPreviewCard(idx, file) {
+        const list = document.getElementById("preview-list");
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const card = document.createElement("div");
+          card.className = "preview-card";
+          card.id = `pc-${idx}`;
+          card.innerHTML = `
+            <div class="preview-img-wrap"><img src="${e.target.result}" alt="" /></div>
+            <div class="preview-body">
+              <input class="preview-field" type="text" placeholder="Title"
+                value="${pendingFiles[idx].title}"
+                oninput="pendingFiles[${idx}].title = this.value" />
+              <input class="preview-field" type="text" placeholder="Description (optional)"
+                oninput="pendingFiles[${idx}].description = this.value" />
+              <button class="preview-remove" onclick="removePreview(${idx})">✕ Remove</button>
+            </div>`;
+          list.appendChild(card);
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function removePreview(idx) {
+        pendingFiles[idx] = null;
+        const card = document.getElementById(`pc-${idx}`);
+        if (card) card.remove();
+        const remaining = pendingFiles.filter(Boolean);
+        if (remaining.length === 0) {
+          document.getElementById("upload-btn").style.display = "none";
+          pendingFiles = [];
+        }
+      }
+
+      // ── UPLOAD ───────────────────────────────────────────────
+      async function uploadAll() {
+        const toUpload = pendingFiles.filter(Boolean);
+        if (!toUpload.length) return;
+
+        const btn = document.getElementById("upload-btn");
+        const progWrap = document.getElementById("progress-wrap");
+        const progBar = document.getElementById("progress-bar");
+
+        btn.disabled = true;
+        btn.textContent = "Uploading…";
+        progWrap.style.display = "block";
+
+        let done = 0;
+        for (const item of toUpload) {
+          try {
+            await uploadSingle(item);
+            done++;
+            progBar.style.width = `${Math.round((done / toUpload.length) * 100)}%`;
+          } catch (err) {
+            toast(`Failed: ${item.file.name} — ${err.message}`, "error");
+          }
+        }
+
+        // Reset
+        pendingFiles = [];
+        document.getElementById("preview-list").innerHTML = "";
+        btn.style.display = "none";
+        btn.disabled = false;
+        btn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg> Upload to Gallery`;
+        setTimeout(() => {
+          progWrap.style.display = "none";
+          progBar.style.width = "0%";
+        }, 800);
+
+        toast(`${done} image${done > 1 ? "s" : ""} uploaded successfully!`);
+        loadAdminGallery();
+      }
+
+      async function uploadSingle({ file, title, description }) {
+        // 1. Upload file to Supabase Storage
+        const ext = file.name.split(".").pop();
+        const filename = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+
+        const uploadRes = await storageApi(`object/${BUCKET}/${filename}`, {
+          method: "POST",
+          headers: { "Content-Type": file.type },
+          body: file,
+        });
+        if (!uploadRes.ok) {
+          const err = await uploadRes.json().catch(() => ({}));
+          throw new Error(err.message || uploadRes.statusText);
+        }
+
+        // 2. Get public URL
+        const publicUrl = `${SUPABASE_URL}/storage/v1/object/public/${BUCKET}/${filename}`;
+
+        // 3. Get next display_order
+        const countRes = await api(
+          "gallery_images?select=display_order&order=display_order.desc&limit=1",
+        );
+        const countData = await countRes.json();
+        const nextOrder =
+          countData.length > 0 ? countData[0].display_order + 1 : 1;
+
+        // 4. Insert record into gallery_images
+        const insertRes = await api("gallery_images", {
+          method: "POST",
+          body: JSON.stringify({
+            title: title || filename,
+            description: description || "",
+            image_url: publicUrl,
+            storage_path: filename,
+            display_order: nextOrder,
+            is_active: true,
+          }),
+        });
+        if (!insertRes.ok) {
+          const err = await insertRes.json().catch(() => ({}));
+          throw new Error(err.message || insertRes.statusText);
+        }
+      }
+
+      // ── ADMIN GALLERY LOAD ───────────────────────────────────
+      let galleryData = [];
+      let dragSrc = null;
+
+      async function loadAdminGallery() {
+        const grid = document.getElementById("gallery-admin-grid");
+        grid.innerHTML = `
+          <div class="skeleton" style="height:220px;border-radius:6px;"></div>
+          <div class="skeleton" style="height:220px;border-radius:6px;"></div>
+          <div class="skeleton" style="height:220px;border-radius:6px;"></div>`;
+
+        const res = await api(
+          "gallery_images?select=*&order=display_order.asc",
+        );
+        galleryData = await res.json();
+
+        document.getElementById("img-count").textContent = galleryData.length;
+
+        if (!galleryData.length) {
+          grid.innerHTML = `
+            <div class="empty-state" style="grid-column:1/-1;">
+              <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <p>No images yet — upload some above!</p>
+            </div>`;
+          return;
+        }
+
+        grid.innerHTML = "";
+        galleryData.forEach((img, i) => {
+          const card = document.createElement("div");
+          card.className = "admin-card";
+          card.draggable = true;
+          card.dataset.id = img.id;
+          card.dataset.order = img.display_order;
+          card.innerHTML = `
+            <div class="admin-img-wrap">
+              <img src="${img.image_url}" alt="${img.title}" loading="lazy" />
+              <div class="admin-order-badge">#${i + 1}</div>
+            </div>
+            <div class="admin-card-body">
+              <div class="admin-card-title">${img.title || "Untitled"}</div>
+              <div class="admin-card-desc">${img.description || "—"}</div>
+              <div class="admin-card-actions">
+                <button class="btn-toggle ${img.is_active ? "active" : "inactive"}"
+                  onclick="toggleActive('${img.id}', ${img.is_active})">
+                  ${img.is_active ? "✓ Visible" : "✕ Hidden"}
+                </button>
+                <button class="btn-delete" title="Delete" onclick="deleteImage('${img.id}','${img.storage_path}')">
+                  <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                </button>
+              </div>
+            </div>`;
+          // Drag events
+          card.addEventListener("dragstart", (e) => {
+            dragSrc = card;
+            card.classList.add("dragging");
+            e.dataTransfer.effectAllowed = "move";
+          });
+          card.addEventListener("dragend", () =>
+            card.classList.remove("dragging"),
+          );
+          card.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            card.classList.add("drag-over");
+          });
+          card.addEventListener("dragleave", () =>
+            card.classList.remove("drag-over"),
+          );
+          card.addEventListener("drop", (e) => {
+            e.preventDefault();
+            card.classList.remove("drag-over");
+            if (dragSrc !== card) reorderCards(dragSrc, card);
+          });
+          grid.appendChild(card);
+        });
+      }
+
+      async function reorderCards(srcCard, targetCard) {
+        const grid = document.getElementById("gallery-admin-grid");
+        const cards = [...grid.querySelectorAll(".admin-card")];
+        const si = cards.indexOf(srcCard);
+        const ti = cards.indexOf(targetCard);
+        if (si < ti) grid.insertBefore(srcCard, targetCard.nextSibling);
+        else grid.insertBefore(srcCard, targetCard);
+
+        // Persist new order
+        const newOrder = [...grid.querySelectorAll(".admin-card")].map(
+          (c, i) => ({ id: c.dataset.id, display_order: i + 1 }),
+        );
+        for (const row of newOrder) {
+          await api(`gallery_images?id=eq.${row.id}`, {
+            method: "PATCH",
+            body: JSON.stringify({ display_order: row.display_order }),
+          });
+        }
+        toast("Order saved!");
+        loadAdminGallery();
+      }
+
+      async function toggleActive(id, current) {
+        await api(`gallery_images?id=eq.${id}`, {
+          method: "PATCH",
+          body: JSON.stringify({ is_active: !current }),
+        });
+        toast(!current ? "Image set to visible" : "Image hidden from website");
+        loadAdminGallery();
+      }
+
+      async function deleteImage(id, storagePath) {
+        if (!confirm("Delete this image? This cannot be undone.")) return;
+        // Delete from storage
+        await storageApi(`object/${BUCKET}/${storagePath}`, {
+          method: "DELETE",
+        });
+        // Delete from DB
+        await api(`gallery_images?id=eq.${id}`, { method: "DELETE" });
+        toast("Image deleted");
+        loadAdminGallery();
+      }
+
+      // ── MESSAGES ────────────────────────────────────────────
+      async function loadMessages() {
+        const tbody = document.getElementById("msg-tbody");
+        tbody.innerHTML =
+          '<tr><td colspan="7" style="text-align:center;color:var(--text-mid);padding:32px;">Loading…</td></tr>';
+
+        const res = await api(
+          "contact_messages?select=*&order=created_at.desc",
+          {},
+          true,
+        );
+        const data = await res.json();
+
+        document.getElementById("msg-count").textContent = data.length;
+        document.getElementById("unread-count").textContent =
+          data.filter((m) => !m.is_read).length + " unread";
+
+        if (!data.length) {
+          tbody.innerHTML =
+            '<tr><td colspan="7" style="text-align:center;color:var(--text-mid);padding:32px;">No messages yet.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = "";
+        data.forEach((msg) => {
+          const tr = document.createElement("tr");
+          if (!msg.is_read) tr.classList.add("unread");
+          tr.innerHTML = `
+            <td style="white-space:nowrap;font-size:.78rem;color:var(--text-mid);">${formatDate(msg.created_at)}</td>
+            <td>
+              ${!msg.is_read ? '<span class="unread-dot"></span>' : ""}
+              ${escHtml(msg.first_name)} ${escHtml(msg.last_name)}
+            </td>
+            <td><a href="mailto:${escHtml(msg.email)}" style="color:var(--teal-mid);">${escHtml(msg.email)}</a></td>
+            <td style="font-size:.83rem;">${escHtml(msg.phone || "—")}</td>
+            <td><span class="msg-type">${escHtml(msg.enquiry_type || "other")}</span></td>
+            <td style="max-width:260px;font-size:.83rem;color:var(--text-mid);">${escHtml(msg.message || "—").slice(0, 120)}${(msg.message || "").length > 120 ? "…" : ""}</td>
+            <td>
+              ${!msg.is_read ? `<button class="btn-mark-read" onclick="markRead('${msg.id}')">Mark read</button>` : '<span style="font-size:.75rem;color:var(--text-mid);">Read ✓</span>'}
+            </td>`;
+          tbody.appendChild(tr);
+        });
+      }
+
+      async function markRead(id) {
+        await api(
+          `contact_messages?id=eq.${id}`,
+          {
+            method: "PATCH",
+            body: JSON.stringify({ is_read: true }),
+          },
+          true,
+        );
+        loadMessages();
+      }
+
+      function escHtml(str) {
+        const d = document.createElement("div");
+        d.appendChild(document.createTextNode(String(str)));
+        return d.innerHTML;
+      }
+    </script>
+  </body>
+</html>
