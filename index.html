@@ -1678,7 +1678,7 @@
       <td style="font-size:.82rem">${esc(msg.phone || "—")}</td>
       <td>
         <span class="msg-type">${esc(msg.enquiry_type || "autre")}</span>
-        ${msg.visit_time ? `<br><small style="color:var(--teal-mid);font-size:.72rem">🕐 ${esc(msg.visit_time)}</small>` : ''}
+        ${(msg.visit_date || msg.visit_time) ? `<br><small style="color:var(--teal-mid);font-size:.72rem">📅 ${esc(msg.visit_date || '')} ${esc(msg.visit_time || '')}</small>` : ''}
       </td>
       <td style="max-width:280px;font-size:.82rem;color:var(--text-mid);white-space:pre-wrap;word-break:break-word">${esc(msg.message || "—")}</td>
       <td>${!msg.is_read ? `<button class="btn-mark" onclick="markRead('${msg.id}')">Marquer lu</button>` : '<span class="read-ok">Lu ✓</span>'}</td>`;
