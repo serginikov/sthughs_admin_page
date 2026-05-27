@@ -803,6 +803,183 @@
         }
       }
 
+      /* FRONT-END EDITOR */
+      .section-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 24px;
+      }
+      .snav-btn {
+        padding: 7px 16px;
+        background: var(--cream);
+        border: 1px solid var(--beige-dark);
+        border-radius: 20px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: var(--text-mid);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .snav-btn:hover, .snav-btn.active {
+        background: var(--teal);
+        border-color: var(--teal);
+        color: var(--white);
+      }
+      .content-item {
+        background: var(--cream);
+        border: 1px solid var(--beige-dark);
+        border-radius: var(--r);
+        padding: 20px;
+        margin-bottom: 18px;
+      }
+      .content-item-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--teal-mid);
+        margin-bottom: 12px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .lang-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-bottom: 12px;
+      }
+      .lang-field label {
+        display: block;
+        font-size: 0.68rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-mid);
+        margin-bottom: 4px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .lang-field textarea, .lang-field input[type="text"] {
+        width: 100%;
+        padding: 9px 11px;
+        background: var(--white);
+        border: 1px solid var(--beige-dark);
+        border-radius: 4px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.84rem;
+        color: var(--text);
+        resize: vertical;
+        outline: none;
+        transition: border-color 0.2s;
+        min-height: 56px;
+      }
+      .lang-field textarea:focus, .lang-field input[type="text"]:focus {
+        border-color: var(--teal-light);
+      }
+      .item-actions {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .btn-save-content {
+        padding: 8px 20px;
+        background: var(--teal);
+        color: var(--gold-light);
+        font-family: "Jost", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .btn-save-content:hover { background: var(--teal-mid); }
+      .btn-save-content:disabled { opacity: 0.5; cursor: not-allowed; }
+      .btn-translate {
+        padding: 8px 16px;
+        background: transparent;
+        border: 1px solid var(--beige-dark);
+        border-radius: 4px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 500;
+        color: var(--text-mid);
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .btn-translate:hover {
+        background: var(--beige);
+        border-color: var(--teal-light);
+        color: var(--teal);
+      }
+      .btn-translate:disabled { opacity: 0.4; cursor: not-allowed; }
+      .save-status {
+        font-size: 0.75rem;
+        color: var(--green);
+        display: none;
+      }
+      .audit-table {
+        font-size: 0.82rem;
+      }
+      .audit-table td {
+        font-size: 0.78rem;
+        max-width: 200px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 14px;
+        margin-bottom: 20px;
+      }
+      .stat-edit-card {
+        background: var(--cream);
+        border: 1px solid var(--beige-dark);
+        border-radius: var(--r);
+        padding: 16px;
+      }
+      .stat-edit-card label {
+        display: block;
+        font-size: 0.68rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-mid);
+        margin-bottom: 6px;
+      }
+      .stat-edit-card input {
+        width: 100%;
+        padding: 9px 11px;
+        background: var(--white);
+        border: 1px solid var(--beige-dark);
+        border-radius: 4px;
+        font-family: "Jost", sans-serif;
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--teal);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .stat-edit-card input:focus { border-color: var(--teal-light); }
+      @media (max-width: 640px) {
+        .lang-grid { grid-template-columns: 1fr; }
+      }
+
       @media (max-width: 640px) {
         .card {
           padding: 20px 16px;
@@ -903,6 +1080,13 @@
             Messages
             <span class="badge" id="unread-badge" style="display: none">0</span>
           </button>
+          <button class="tab-btn" onclick="switchTab('frontend', this)" id="tab-frontend-btn">
+            <svg viewBox="0 0 24 24">
+              <polyline points="16 18 22 12 16 6"/>
+              <polyline points="8 6 2 12 8 18"/>
+            </svg>
+            Front-end
+          </button>
         </div>
       </div>
 
@@ -985,6 +1169,63 @@
               <div class="skeleton"></div>
               <div class="skeleton"></div>
               <div class="skeleton"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- FRONT-END -->
+        <div class="tab-panel" id="panel-frontend">
+          <!-- STATS -->
+          <div class="card">
+            <div class="card-title">Statistiques du site</div>
+            <p class="card-sub">Modifiez les chiffres affichés sur la page d'accueil.</p>
+            <div class="stats-grid" id="stats-edit-grid">
+              <div class="skeleton" style="min-height:80px"></div>
+              <div class="skeleton" style="min-height:80px"></div>
+              <div class="skeleton" style="min-height:80px"></div>
+              <div class="skeleton" style="min-height:80px"></div>
+            </div>
+            <button class="btn-save-content" onclick="saveStats()" style="margin-top:4px">
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Sauvegarder les stats
+            </button>
+          </div>
+
+          <!-- CONTENT EDITOR -->
+          <div class="card">
+            <div class="toolbar">
+              <div>
+                <div class="card-title">Contenu du site</div>
+                <p class="card-sub" style="margin-bottom:0">Modifiez les textes affichés sur le site. Les traductions FR et ZH peuvent être générées automatiquement depuis l'anglais.</p>
+              </div>
+              <button class="btn-refresh" onclick="loadFrontendContent(currentSection)">
+                <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                Actualiser
+              </button>
+            </div>
+            <div class="section-nav" id="section-nav"></div>
+            <div id="content-items-wrap"></div>
+          </div>
+
+          <!-- AUDIT LOG -->
+          <div class="card">
+            <div class="toolbar">
+              <div>
+                <div class="card-title">Historique des modifications</div>
+                <p class="card-sub" style="margin-bottom:0">Suivi complet de qui a modifié quoi et quand.</p>
+              </div>
+              <button class="btn-refresh" onclick="loadAuditLog()">
+                <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                Actualiser
+              </button>
+            </div>
+            <div class="msg-wrap">
+              <table class="audit-table">
+                <thead><tr>
+                  <th>Date</th><th>Admin</th><th>Clé</th><th>Langue</th><th>Ancienne valeur</th><th>Nouvelle valeur</th>
+                </tr></thead>
+                <tbody id="audit-tbody"><tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-mid)">Chargement…</td></tr></tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -1265,8 +1506,8 @@
       }
 
       async function uploadOne({ file, title, description }) {
-        const ext = file.name.split(".").pop();
-        const path = `${Date.now()}_${Math.random().toString(36).slice(2)}.${ext}`;
+        const ext = file.name.split(".").pop().toLowerCase();
+        const path = `${crypto.randomUUID()}.${ext}`;
         const { error: upErr } = await sb.storage
           .from(BUCKET)
           .upload(path, file, { contentType: file.type });
@@ -1430,8 +1671,11 @@
       <td>${esc(msg.last_name || "—")}</td>
       <td><a href="mailto:${escA(msg.email)}" style="color:var(--teal-mid)">${esc(msg.email)}</a></td>
       <td style="font-size:.82rem">${esc(msg.phone || "—")}</td>
-      <td><span class="msg-type">${esc(msg.enquiry_type || "autre")}</span></td>
-      <td style="max-width:240px;font-size:.82rem;color:var(--text-mid)">${esc((msg.message || "—").slice(0, 100))}${(msg.message || "").length > 100 ? "…" : ""}</td>
+      <td>
+        <span class="msg-type">${esc(msg.enquiry_type || "autre")}</span>
+        ${msg.visit_time ? `<br><small style="color:var(--teal-mid);font-size:.72rem">🕐 ${esc(msg.visit_time)}</small>` : ''}
+      </td>
+      <td style="max-width:280px;font-size:.82rem;color:var(--text-mid);white-space:pre-wrap;word-break:break-word">${esc(msg.message || "—")}</td>
       <td>${!msg.is_read ? `<button class="btn-mark" onclick="markRead('${msg.id}')">Marquer lu</button>` : '<span class="read-ok">Lu ✓</span>'}</td>`;
           tbody.appendChild(tr);
         });
@@ -1443,6 +1687,292 @@
           .update({ is_read: true })
           .eq("id", id);
         loadMessages();
+      }
+
+      // ── FRONT-END CONTENT EDITOR ──────────────────────────────
+
+      const CONTENT_SCHEMA = {
+        hero: [
+          { key: 'hero.badge',   label: 'Badge / Sous-titre héro', multiline: false },
+          { key: 'hero.tagline', label: 'Accroche principale (héro)', multiline: true },
+          { key: 'hero.cta1',   label: 'Bouton principal', multiline: false },
+          { key: 'hero.cta2',   label: 'Bouton secondaire', multiline: false },
+        ],
+        about: [
+          { key: 'about.p1', label: 'À propos — Paragraphe 1', multiline: true },
+          { key: 'about.p2', label: 'À propos — Paragraphe 2', multiline: true },
+          { key: 'about.p3', label: 'À propos — Paragraphe 3', multiline: true },
+        ],
+        mission: [
+          { key: 'mission.quote', label: 'Citation centrale', multiline: true },
+          { key: 'vision.title',  label: 'Titre Vision', multiline: false },
+          { key: 'vision.text',   label: 'Texte Vision', multiline: true },
+          { key: 'mission.title', label: 'Titre Mission', multiline: false },
+          { key: 'mission.text',  label: 'Texte Mission', multiline: true },
+        ],
+        services: [
+          { key: 's1.title', label: 'Service 1 — Titre', multiline: false },
+          { key: 's1.text',  label: 'Service 1 — Texte', multiline: true },
+          { key: 's2.title', label: 'Service 2 — Titre', multiline: false },
+          { key: 's2.text',  label: 'Service 2 — Texte', multiline: true },
+          { key: 's3.title', label: 'Service 3 — Titre', multiline: false },
+          { key: 's3.text',  label: 'Service 3 — Texte', multiline: true },
+          { key: 's4.title', label: 'Service 4 — Titre', multiline: false },
+          { key: 's4.text',  label: 'Service 4 — Texte', multiline: true },
+          { key: 's5.title', label: 'Service 5 — Titre', multiline: false },
+          { key: 's5.text',  label: 'Service 5 — Texte', multiline: true },
+          { key: 's6.title', label: 'Service 6 — Titre', multiline: false },
+          { key: 's6.text',  label: 'Service 6 — Texte', multiline: true },
+        ],
+        gallery: [
+          { key: 'gallery.label', label: 'Label section galerie', multiline: false },
+          { key: 'gallery.lead',  label: 'Texte intro galerie', multiline: true },
+        ],
+        contact: [
+          { key: 'contact.intro',     label: 'Introduction contact', multiline: true },
+          { key: 'c.admission.text',  label: 'Texte admission', multiline: false },
+        ],
+        footer: [
+          { key: 'footer.about', label: 'Texte pied de page', multiline: true },
+        ],
+      };
+
+      const SECTION_LABELS = {
+        hero: 'Héro', about: 'À propos', mission: 'Mission',
+        services: 'Services', gallery: 'Galerie', contact: 'Contact', footer: 'Footer'
+      };
+
+      const LANGS = [
+        { code: 'en', flag: '🇬🇧', label: 'English' },
+        { code: 'fr', flag: '🇫🇷', label: 'Français' },
+        { code: 'zh', flag: '🇨🇳', label: '中文' },
+        { code: 'mu', flag: '🇲🇺', label: 'Morisyen' },
+      ];
+
+      let currentSection = 'hero';
+      let contentData = {};
+      let adminUser = null;
+
+      function buildSectionNav() {
+        const nav = document.getElementById('section-nav');
+        nav.innerHTML = Object.entries(SECTION_LABELS).map(([key, label]) =>
+          `<button class="snav-btn${key === currentSection ? ' active' : ''}"
+            onclick="switchSection('${key}')">${label}</button>`
+        ).join('');
+      }
+
+      async function switchSection(section) {
+        currentSection = section;
+        buildSectionNav();
+        await loadFrontendContent(section);
+      }
+
+      async function loadFrontendContent(section) {
+        const wrap = document.getElementById('content-items-wrap');
+        wrap.innerHTML = '<div class="skeleton" style="min-height:120px;margin-bottom:14px"></div><div class="skeleton" style="min-height:120px"></div>';
+
+        const { data, error } = await sb.from('site_content')
+          .select('key,lang,value')
+          .in('key', CONTENT_SCHEMA[section].map(i => i.key));
+
+        if (error) { toast('Erreur chargement contenu', 'err'); return; }
+
+        contentData = {};
+        (data || []).forEach(r => {
+          if (!contentData[r.key]) contentData[r.key] = {};
+          contentData[r.key][r.lang] = r.value;
+        });
+
+        wrap.innerHTML = '';
+        CONTENT_SCHEMA[section].forEach(item => {
+          wrap.appendChild(buildContentItem(item, section));
+        });
+      }
+
+      function buildContentItem(item, section) {
+        const div = document.createElement('div');
+        div.className = 'content-item';
+        div.id = 'ci-' + item.key.replace(/\./g, '-');
+
+        const tag = item.multiline ? 'textarea' : 'input type="text"';
+        const closeTag = item.multiline ? 'textarea' : 'input';
+
+        div.innerHTML = `
+          <div class="content-item-label">
+            <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            ${esc(item.label)}
+            <span style="opacity:.4;font-weight:400">(${item.key})</span>
+          </div>
+          <div class="lang-grid">
+            ${LANGS.map(l => `
+              <div class="lang-field">
+                <label>${l.flag} ${l.label}</label>
+                <${tag}
+                  id="cf-${item.key.replace(/\./g,'-')}-${l.code}"
+                  rows="${item.multiline ? 3 : 1}"
+                  style="${item.multiline ? '' : 'min-height:36px;resize:none'}"
+                >${escA(contentData[item.key]?.[l.code] || '')}</${closeTag === 'input' ? '' : closeTag}>
+              </div>`).join('')}
+          </div>
+          <div class="item-actions">
+            <button class="btn-save-content" onclick="saveContentItem('${item.key}','${section}','${item.key.replace(/\./g,'-')}')">
+              <svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Sauvegarder
+            </button>
+            <button class="btn-translate" onclick="translateItem('${item.key.replace(/\./g,'-')}')">
+              🌐 Traduire FR + ZH depuis EN
+            </button>
+            <span class="save-status" id="ss-${item.key.replace(/\./g,'-')}">✓ Sauvegardé</span>
+          </div>`;
+
+        return div;
+      }
+
+      function getFieldVal(keySlug, langCode) {
+        const el = document.getElementById(`cf-${keySlug}-${langCode}`);
+        return el ? el.value.trim() : '';
+      }
+
+      async function saveContentItem(key, section, keySlug) {
+        const btn = document.querySelector(`#ci-${keySlug} .btn-save-content`);
+        if (btn) { btn.disabled = true; btn.innerHTML = '<span class="spin"></span> Sauvegarde…'; }
+
+        const { data: { user } } = await sb.auth.getUser();
+        const adminEmail = user?.email || '';
+
+        for (const l of LANGS) {
+          const newVal = getFieldVal(keySlug, l.code);
+          const oldVal = contentData[key]?.[l.code] || '';
+          if (newVal === oldVal) continue;
+
+          const { error } = await sb.from('site_content').upsert({
+            key, section, lang: l.code, value: newVal,
+            updated_by: user?.id || null,
+          }, { onConflict: 'key,lang' });
+
+          if (!error) {
+            await sb.from('content_audit_log').insert({
+              content_key: key, section, lang: l.code,
+              old_value: oldVal || null,
+              new_value: newVal,
+              changed_by: user?.id || null,
+              changed_by_email: adminEmail,
+            });
+            if (!contentData[key]) contentData[key] = {};
+            contentData[key][l.code] = newVal;
+          }
+        }
+
+        if (btn) {
+          btn.disabled = false;
+          btn.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" stroke="currentColor" fill="none" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg> Sauvegarder';
+        }
+        const ss = document.getElementById('ss-' + keySlug);
+        if (ss) { ss.style.display = 'inline'; setTimeout(() => { ss.style.display = 'none'; }, 2500); }
+        toast('Contenu mis à jour !');
+      }
+
+      async function translateItem(keySlug) {
+        const btn = document.querySelector(`#ci-${keySlug} .btn-translate`);
+        if (btn) { btn.disabled = true; btn.textContent = '⏳ Traduction…'; }
+
+        const enText = getFieldVal(keySlug, 'en');
+        if (!enText) { toast('Texte EN vide — rien à traduire', 'err'); if (btn) { btn.disabled = false; btn.textContent = '🌐 Traduire FR + ZH depuis EN'; } return; }
+
+        const [frText, zhText] = await Promise.all([
+          autoTranslate(enText, 'fr'),
+          autoTranslate(enText, 'zh-CN'),
+        ]);
+
+        if (frText) {
+          const frEl = document.getElementById(`cf-${keySlug}-fr`);
+          if (frEl) frEl.value = frText;
+        }
+        if (zhText) {
+          const zhEl = document.getElementById(`cf-${keySlug}-zh`);
+          if (zhEl) zhEl.value = zhText;
+        }
+
+        if (btn) { btn.disabled = false; btn.textContent = '🌐 Traduire FR + ZH depuis EN'; }
+        toast('Traduction appliquée — vérifiez et sauvegardez !');
+      }
+
+      async function autoTranslate(text, targetLang) {
+        try {
+          const res = await fetch(
+            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`
+          );
+          const data = await res.json();
+          return data.responseData?.translatedText || null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      // ── STATS EDITOR ──────────────────────────────────────────
+      async function loadStatsEditor() {
+        const grid = document.getElementById('stats-edit-grid');
+        const { data, error } = await sb.from('site_stats').select('*').order('stat_key');
+        if (error || !data?.length) { grid.innerHTML = '<p style="color:var(--text-mid)">Aucune stat trouvée.</p>'; return; }
+        grid.innerHTML = data.map(s => `
+          <div class="stat-edit-card">
+            <label>${esc(s.label_fr || s.stat_key)}</label>
+            <input type="text" id="stat-${esc(s.stat_key)}" value="${escA(s.value)}" placeholder="Ex: 64" />
+          </div>`).join('');
+        window._statsData = data;
+      }
+
+      async function saveStats() {
+        if (!window._statsData) return;
+        const { data: { user } } = await sb.auth.getUser();
+        for (const s of window._statsData) {
+          const el = document.getElementById('stat-' + s.stat_key);
+          if (!el) continue;
+          const newVal = el.value.trim();
+          if (newVal === s.value) continue;
+          await sb.from('site_stats').update({ value: newVal, updated_by: user?.id || null }).eq('stat_key', s.stat_key);
+          s.value = newVal;
+        }
+        toast('Statistiques mises à jour !');
+      }
+
+      // ── AUDIT LOG ─────────────────────────────────────────────
+      async function loadAuditLog() {
+        const tbody = document.getElementById('audit-tbody');
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-mid)">Chargement…</td></tr>';
+        const { data, error } = await sb.from('content_audit_log')
+          .select('*').order('changed_at', { ascending: false }).limit(50);
+        if (error || !data?.length) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-mid)">Aucune modification enregistrée.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = data.map(r => `<tr>
+          <td style="white-space:nowrap;font-size:.72rem">${fmtDate(r.changed_at)}</td>
+          <td style="font-size:.76rem">${esc(r.changed_by_email || '—')}</td>
+          <td><code style="font-size:.72rem;background:var(--beige);padding:2px 5px;border-radius:2px">${esc(r.content_key)}</code></td>
+          <td>${esc(r.lang)}</td>
+          <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--red)" title="${escA(r.old_value || '')}">${esc(r.old_value || '—')}</td>
+          <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--green)" title="${escA(r.new_value)}">${esc(r.new_value)}</td>
+        </tr>`).join('');
+      }
+
+      // ── INIT FRONTEND TAB ─────────────────────────────────────
+      function initFrontendTab() {
+        buildSectionNav();
+        loadFrontendContent(currentSection);
+        loadStatsEditor();
+        loadAuditLog();
+      }
+
+      // Override switchTab to init frontend on first open
+      const _switchTabOrig = switchTab;
+      let frontendInited = false;
+      function switchTab(tab, btn) {
+        _switchTabOrig(tab, btn);
+        if (tab === 'frontend' && !frontendInited) {
+          frontendInited = true;
+          initFrontendTab();
+        }
       }
 
       init();
