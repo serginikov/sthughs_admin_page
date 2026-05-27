@@ -1364,6 +1364,7 @@
       }
 
       // ── TABS ──────────────────────────────────────────────────────
+      let frontendInited = false;
       function switchTab(tab, btn) {
         document
           .querySelectorAll(".tab-panel")
@@ -1373,6 +1374,10 @@
           .forEach((b) => b.classList.remove("active"));
         document.getElementById("panel-" + tab).classList.add("active");
         btn.classList.add("active");
+        if (tab === 'frontend' && !frontendInited) {
+          frontendInited = true;
+          initFrontendTab();
+        }
       }
 
       // ── UTILS ─────────────────────────────────────────────────────
@@ -1962,17 +1967,6 @@
         loadFrontendContent(currentSection);
         loadStatsEditor();
         loadAuditLog();
-      }
-
-      // Override switchTab to init frontend on first open
-      const _switchTabOrig = switchTab;
-      let frontendInited = false;
-      function switchTab(tab, btn) {
-        _switchTabOrig(tab, btn);
-        if (tab === 'frontend' && !frontendInited) {
-          frontendInited = true;
-          initFrontendTab();
-        }
       }
 
       init();
