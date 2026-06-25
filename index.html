@@ -991,6 +991,118 @@
           display: none;
         }
       }
+
+      /* VIDEO ADMIN */
+      .video-admin-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 18px;
+      }
+      .video-admin-card {
+        border: 1px solid var(--beige-dark);
+        border-radius: var(--r);
+        overflow: hidden;
+        background: var(--cream);
+        transition: box-shadow 0.25s, transform 0.25s;
+      }
+      .video-admin-card:hover {
+        box-shadow: var(--sh);
+        transform: translateY(-2px);
+      }
+      .video-thumb {
+        position: relative;
+        aspect-ratio: 16/9;
+        background: #0a2e2e;
+        overflow: hidden;
+      }
+      .video-thumb img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+      .video-body {
+        padding: 11px;
+      }
+      .video-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1rem;
+        font-weight: 600;
+        color: var(--teal);
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .video-url-label {
+        font-size: 0.72rem;
+        color: var(--text-mid);
+        margin-bottom: 9px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .add-video-form {
+        display: grid;
+        grid-template-columns: 1fr 1.4fr auto;
+        gap: 12px;
+        align-items: end;
+        margin-bottom: 18px;
+      }
+      .form-field {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .form-field label {
+        font-size: 0.71rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--text-mid);
+      }
+      .form-field input {
+        padding: 10px 12px;
+        border: 1.5px solid var(--beige-dark);
+        border-radius: 4px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.9rem;
+        color: var(--text);
+        background: var(--white);
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .form-field input:focus { border-color: var(--teal-light); }
+      .btn-add-video {
+        padding: 10px 20px;
+        background: var(--teal);
+        color: var(--gold-light);
+        font-family: "Jost", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        transition: background 0.2s;
+        white-space: nowrap;
+        height: 42px;
+      }
+      .btn-add-video:hover { background: var(--teal-mid); }
+      .btn-add-video:disabled { opacity: 0.5; cursor: not-allowed; }
+      .info-note {
+        font-size: 0.78rem;
+        color: var(--text-mid);
+        background: rgba(184, 150, 62, 0.08);
+        border: 1px solid rgba(184, 150, 62, 0.25);
+        border-radius: 4px;
+        padding: 10px 14px;
+        margin-bottom: 18px;
+        line-height: 1.6;
+      }
+      @media (max-width: 640px) {
+        .add-video-form { grid-template-columns: 1fr; }
+      }
     </style>
   </head>
   <body>
@@ -1079,6 +1191,13 @@
             </svg>
             Messages
             <span class="badge" id="unread-badge" style="display: none">0</span>
+          </button>
+          <button class="tab-btn" onclick="switchTab('videos', this)" id="tab-videos-btn">
+            <svg viewBox="0 0 24 24">
+              <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+            Vidéos
+            <span class="badge" id="vid-badge" style="display:none">0</span>
           </button>
           <button class="tab-btn" onclick="switchTab('frontend', this)" id="tab-frontend-btn">
             <svg viewBox="0 0 24 24">
@@ -1169,6 +1288,43 @@
               <div class="skeleton"></div>
               <div class="skeleton"></div>
               <div class="skeleton"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- VIDEOS YOUTUBE -->
+        <div class="tab-panel" id="panel-videos">
+          <div class="card">
+            <div class="card-title">Ajouter une vidéo YouTube</div>
+            <p class="card-sub">Collez l'URL complète, l'URL courte ou directement l'ID de la vidéo.</p>
+            <div class="add-video-form">
+              <div class="form-field">
+                <label>Titre</label>
+                <input type="text" id="vid-title" placeholder="Ex: Visite de St Hugh's" />
+              </div>
+              <div class="form-field">
+                <label>URL ou ID YouTube</label>
+                <input type="text" id="vid-url" placeholder="https://youtu.be/HmcLLCwqjf4 ou HmcLLCwqjf4" />
+              </div>
+              <button class="btn-add-video" onclick="addVideo()">+ Ajouter</button>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="toolbar">
+              <div>
+                <div class="card-title">Gérer les vidéos</div>
+                <p class="toolbar-info"><span id="vid-count">—</span> vidéos &nbsp;·&nbsp; Visibles sur la page Galerie</p>
+              </div>
+              <button class="btn-refresh" onclick="loadVideosAdmin()">
+                <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                Actualiser
+              </button>
+            </div>
+            <div class="video-admin-grid" id="video-admin-grid">
+              <div class="skeleton" style="min-height:190px"></div>
+              <div class="skeleton" style="min-height:190px"></div>
+              <div class="skeleton" style="min-height:190px"></div>
             </div>
           </div>
         </div>
@@ -1365,18 +1521,19 @@
 
       // ── TABS ──────────────────────────────────────────────────────
       let frontendInited = false;
+      let videosInited = false;
       function switchTab(tab, btn) {
-        document
-          .querySelectorAll(".tab-panel")
-          .forEach((p) => p.classList.remove("active"));
-        document
-          .querySelectorAll(".tab-btn")
-          .forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".tab-panel").forEach((p) => p.classList.remove("active"));
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
         document.getElementById("panel-" + tab).classList.add("active");
         btn.classList.add("active");
         if (tab === 'frontend' && !frontendInited) {
           frontendInited = true;
           initFrontendTab();
+        }
+        if (tab === 'videos' && !videosInited) {
+          videosInited = true;
+          loadVideosAdmin();
         }
       }
 
@@ -1736,6 +1893,7 @@
         contact: [
           { key: 'contact.intro',     label: 'Introduction contact', multiline: true },
           { key: 'c.admission.text',  label: 'Texte admission', multiline: false },
+          { key: 'contact.hours',     label: 'Heures de visite (ex: Lun–Ven: 09:00 – 17:00)', multiline: false },
         ],
         footer: [
           { key: 'footer.about', label: 'Texte pied de page', multiline: true },
@@ -1967,6 +2125,123 @@
         loadFrontendContent(currentSection);
         loadStatsEditor();
         loadAuditLog();
+      }
+
+      // ── YOUTUBE VIDEOS ADMIN ──────────────────────────────────
+      function extractYoutubeId(input) {
+        input = (input || '').trim();
+        if (/^[a-zA-Z0-9_-]{11}$/.test(input)) return input;
+        let m = input.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+        if (m) return m[1];
+        m = input.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+        if (m) return m[1];
+        m = input.match(/embed\/([a-zA-Z0-9_-]{11})/);
+        if (m) return m[1];
+        return null;
+      }
+
+      function vidIdFromEmbedUrl(url) {
+        const m = (url || '').match(/embed\/([a-zA-Z0-9_-]{11})/);
+        return m ? m[1] : '';
+      }
+
+      async function addVideo() {
+        const title = document.getElementById('vid-title').value.trim();
+        const urlInput = document.getElementById('vid-url').value.trim();
+        if (!urlInput) { toast('Veuillez entrer une URL ou ID YouTube', 'err'); return; }
+        const videoId = extractYoutubeId(urlInput);
+        if (!videoId) { toast('URL YouTube non reconnue', 'err'); return; }
+
+        const embedUrl = `https://www.youtube.com/embed/${videoId}`;
+        const btn = document.querySelector('.btn-add-video');
+        btn.disabled = true;
+        btn.textContent = '⏳ Ajout…';
+
+        const { data: last } = await sb.from('youtube_videos')
+          .select('display_order').order('display_order', { ascending: false }).limit(1);
+        const nextOrder = last?.length ? last[0].display_order + 1 : 1;
+
+        const { error } = await sb.from('youtube_videos').insert({
+          title: title || `Vidéo ${nextOrder}`,
+          youtube_url: embedUrl,
+          is_active: true,
+          display_order: nextOrder,
+        });
+
+        btn.disabled = false;
+        btn.textContent = '+ Ajouter';
+
+        if (error) { toast('Erreur: ' + error.message, 'err'); return; }
+        document.getElementById('vid-title').value = '';
+        document.getElementById('vid-url').value = '';
+        toast('Vidéo ajoutée !');
+        loadVideosAdmin();
+      }
+
+      async function loadVideosAdmin() {
+        const grid = document.getElementById('video-admin-grid');
+        grid.innerHTML = '<div class="skeleton" style="min-height:190px"></div><div class="skeleton" style="min-height:190px"></div><div class="skeleton" style="min-height:190px"></div>';
+
+        const { data, error } = await sb.from('youtube_videos')
+          .select('*').order('display_order', { ascending: true });
+
+        if (error) {
+          grid.innerHTML = `<div class="empty" style="grid-column:1/-1"><p style="color:var(--red)">Erreur: ${esc(error.message)}<br><small>Créez d'abord la table <code>youtube_videos</code> dans Supabase.</small></p></div>`;
+          return;
+        }
+
+        const vids = data || [];
+        document.getElementById('vid-count').textContent = vids.length;
+        const badge = document.getElementById('vid-badge');
+        badge.textContent = vids.length;
+        badge.style.display = vids.length ? 'inline' : 'none';
+
+        if (!vids.length) {
+          grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg><p>Aucune vidéo — ajoutez-en ci-dessus !</p></div>';
+          return;
+        }
+
+        grid.innerHTML = '';
+        vids.forEach((vid, i) => {
+          const thumbId = vidIdFromEmbedUrl(vid.youtube_url);
+          const c = document.createElement('div');
+          c.className = 'video-admin-card';
+          c.innerHTML = `
+            <div class="video-thumb">
+              <img src="https://img.youtube.com/vi/${esc(thumbId)}/mqdefault.jpg"
+                   alt="${escA(vid.title)}" loading="lazy" />
+              <div class="order-badge">#${i + 1}</div>
+            </div>
+            <div class="video-body">
+              <div class="video-title">${esc(vid.title)}</div>
+              <div class="video-url-label">${esc(vid.youtube_url)}</div>
+              <div class="adm-actions">
+                <button class="btn-toggle ${vid.is_active ? 'on' : 'off'}"
+                  onclick="toggleVideoActive('${vid.id}', ${vid.is_active})">
+                  ${vid.is_active ? '✓ Visible' : '✕ Masqué'}
+                </button>
+                <button class="btn-del" onclick="deleteVideo('${vid.id}')">
+                  <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg>
+                </button>
+              </div>
+            </div>`;
+          grid.appendChild(c);
+        });
+      }
+
+      async function toggleVideoActive(id, current) {
+        const { error } = await sb.from('youtube_videos').update({ is_active: !current }).eq('id', id);
+        if (error) { toast('Erreur', 'err'); return; }
+        toast(!current ? 'Vidéo rendue visible sur le site' : 'Vidéo masquée du site');
+        loadVideosAdmin();
+      }
+
+      async function deleteVideo(id) {
+        if (!confirm('Supprimer cette vidéo ? Action irréversible.')) return;
+        const { error } = await sb.from('youtube_videos').delete().eq('id', id);
+        if (error) { toast('Erreur de suppression', 'err'); return; }
+        toast('Vidéo supprimée');
+        loadVideosAdmin();
       }
 
       init();
