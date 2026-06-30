@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Admin — St Hugh's Anglican Home</title>
+    <title>Admin St Hugh's Anglican Home</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link
       href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Jost:wght@300;400;500;600&display=swap"
@@ -1103,6 +1103,220 @@
       @media (max-width: 640px) {
         .add-video-form { grid-template-columns: 1fr; }
       }
+
+      /* ── ALBUMS ADMIN ────────────────────────────────────── */
+      .btn-new-album {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 16px;
+        background: var(--teal);
+        color: var(--gold-light);
+        border: none;
+        border-radius: 4px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.78rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .btn-new-album:hover { background: var(--teal-mid); }
+      .albums-admin-row {
+        display: flex;
+        gap: 18px;
+        overflow-x: auto;
+        padding-bottom: 14px;
+        align-items: flex-start;
+        min-height: 180px;
+      }
+      .albums-admin-row::-webkit-scrollbar { height: 6px; }
+      .albums-admin-row::-webkit-scrollbar-track { background: var(--beige); border-radius: 4px; }
+      .albums-admin-row::-webkit-scrollbar-thumb { background: var(--teal-light); border-radius: 4px; }
+      .album-admin-card {
+        flex: 0 0 270px;
+        border: 1px solid var(--beige-dark);
+        border-radius: var(--r);
+        background: var(--white);
+        padding: 14px;
+        box-shadow: 0 2px 8px rgba(18,72,72,0.06);
+        position: relative;
+      }
+      .album-admin-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 12px;
+      }
+      .album-admin-title-input {
+        flex: 1;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.05rem;
+        font-weight: 600;
+        color: var(--teal);
+        border: none;
+        border-bottom: 1.5px solid transparent;
+        padding: 2px 4px;
+        outline: none;
+        background: transparent;
+        cursor: pointer;
+        transition: border-color 0.2s;
+        min-width: 0;
+      }
+      .album-admin-title-input:focus { border-bottom-color: var(--teal-light); cursor: text; }
+      .btn-del-album {
+        flex-shrink: 0;
+        width: 26px;
+        height: 26px;
+        border-radius: 50%;
+        background: transparent;
+        border: 1px solid var(--beige-dark);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-mid);
+        transition: all 0.2s;
+      }
+      .btn-del-album:hover { background: var(--red); border-color: var(--red); color: white; }
+      .btn-del-album svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2; }
+      .album-admin-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 7px;
+      }
+      .album-img-thumb {
+        aspect-ratio: 1;
+        border-radius: 5px;
+        overflow: hidden;
+        position: relative;
+        background: var(--beige);
+      }
+      .album-img-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s; }
+      .album-img-thumb:hover img { transform: scale(1.05); }
+      .album-img-del {
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 22px;
+        height: 22px;
+        border-radius: 50%;
+        background: rgba(192,57,43,0.92);
+        border: none;
+        cursor: pointer;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1;
+      }
+      .album-img-thumb:hover .album-img-del { display: flex; }
+      .album-add-cell {
+        aspect-ratio: 1;
+        border-radius: 5px;
+        background: var(--cream);
+        border: 2px dashed var(--beige-dark);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 1.6rem;
+        color: var(--teal-light);
+        transition: all 0.2s;
+        position: relative;
+        overflow: hidden;
+      }
+      .album-add-cell:hover { border-color: var(--teal-light); background: rgba(42,144,144,0.05); }
+      .album-add-cell input[type="file"] {
+        position: absolute;
+        inset: 0;
+        opacity: 0;
+        cursor: pointer;
+        width: 100%;
+        height: 100%;
+      }
+      .album-img-count {
+        font-size: 0.72rem;
+        color: var(--text-mid);
+        text-align: right;
+        margin-top: 8px;
+      }
+
+      /* ── SITE IMAGES (hero / about) ──────────────────────── */
+      .site-images-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+      @media (max-width: 640px) { .site-images-grid { grid-template-columns: 1fr; } }
+      .site-img-item {
+        border: 1px solid var(--beige-dark);
+        border-radius: var(--r);
+        padding: 16px;
+        background: var(--cream);
+      }
+      .site-img-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--teal-mid);
+        margin-bottom: 10px;
+      }
+      .site-img-preview-wrap {
+        width: 100%;
+        aspect-ratio: 16/9;
+        border-radius: 4px;
+        overflow: hidden;
+        background: var(--beige);
+        margin-bottom: 12px;
+        position: relative;
+      }
+      .site-img-preview-wrap.square { aspect-ratio: 1; }
+      .site-img-preview-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .site-img-spinner {
+        position: absolute;
+        inset: 0;
+        background: rgba(255,255,255,0.82);
+        display: none;
+        align-items: center;
+        justify-content: center;
+      }
+      .site-img-spinner.show { display: flex; }
+      .site-img-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+      .btn-upload-img {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 8px 14px;
+        background: var(--teal);
+        color: var(--gold-light);
+        border: none;
+        border-radius: 4px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .btn-upload-img:hover { background: var(--teal-mid); }
+      .btn-reset-img {
+        padding: 8px 12px;
+        background: transparent;
+        border: 1px solid var(--beige-dark);
+        border-radius: 4px;
+        font-family: "Jost", sans-serif;
+        font-size: 0.75rem;
+        color: var(--text-mid);
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .btn-reset-img:hover { background: var(--beige); border-color: var(--teal-light); color: var(--teal); }
     </style>
   </head>
   <body>
@@ -1115,7 +1329,7 @@
           </svg>
         </div>
         <h1>Admin Panel</h1>
-        <p>St Hugh's Anglican Home — Accès sécurisé</p>
+        <p>St Hugh's Anglican Home  Accès sécurisé</p>
         <div class="lf">
           <label>Adresse email</label
           ><input
@@ -1151,7 +1365,7 @@
       <header>
         <div class="hdr">
           <div class="hdr-brand">
-            <strong>St Hugh's — Admin</strong
+            <strong>St Hugh's  Admin</strong
             ><span>Panneau d'administration</span>
           </div>
           <div class="hdr-right">
@@ -1213,81 +1427,22 @@
         <!-- GALERIE -->
         <div class="tab-panel active" id="panel-gallery">
           <div class="card">
-            <div class="card-title">Uploader des images</div>
-            <p class="card-sub">
-              Glissez vos images, ajoutez un titre et une description, puis
-              cliquez sur Uploader.
-            </p>
-            <div
-              class="drop-zone"
-              id="drop-zone"
-              ondragover="onDragOver(event)"
-              ondragleave="onDragLeave()"
-              ondrop="onDrop(event)"
-            >
-              <input
-                type="file"
-                id="file-input"
-                multiple
-                accept="image/jpeg,image/png,image/webp,image/gif"
-                onchange="onFiles(this.files)"
-              />
-              <div class="drop-icon">
-                <svg viewBox="0 0 24 24">
-                  <polyline points="16 16 12 12 8 16" />
-                  <line x1="12" y1="12" x2="12" y2="21" />
-                  <path
-                    d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"
-                  />
-                </svg>
-              </div>
-              <h3>Glissez vos images ici</h3>
-              <p>
-                ou
-                <span onclick="document.getElementById('file-input').click()"
-                  >parcourir les fichiers</span
-                >
-                &nbsp;·&nbsp; JPEG, PNG, WebP — max 10 Mo
-              </p>
-            </div>
-            <div id="preview-list"></div>
-            <button id="upload-btn" onclick="uploadAll()">
-              <svg viewBox="0 0 24 24">
-                <polyline points="16 16 12 12 8 16" />
-                <line x1="12" y1="12" x2="12" y2="21" />
-                <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
-              </svg>
-              Uploader dans la galerie
-            </button>
-            <div class="prog-wrap" id="prog-wrap">
-              <div class="prog-bar" id="prog-bar"></div>
-            </div>
-          </div>
-
-          <div class="card">
             <div class="toolbar">
               <div>
-                <div class="card-title">Gérer la galerie</div>
-                <p class="toolbar-info">
-                  <span id="img-count">—</span> images &nbsp;·&nbsp; Glissez les
-                  cartes pour réordonner
-                </p>
+                <div class="card-title">Galeries</div>
+                <p class="card-sub" style="margin:0">Créez des galeries, ajoutez des images, renommez et réorganisez.</p>
               </div>
-              <button class="btn-refresh" onclick="loadGalleryAdmin()">
-                <svg viewBox="0 0 24 24">
-                  <polyline points="23 4 23 10 17 10" />
-                  <polyline points="1 20 1 14 7 14" />
-                  <path
-                    d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"
-                  />
-                </svg>
-                Actualiser
-              </button>
+              <div style="display:flex;gap:8px;align-items:center">
+                <button class="btn-refresh" onclick="loadAlbumsAdmin()">
+                  <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                  Actualiser
+                </button>
+                <button class="btn-new-album" onclick="createAlbum()">+ Nouvelle galerie</button>
+              </div>
             </div>
-            <div id="gallery-admin-grid">
-              <div class="skeleton"></div>
-              <div class="skeleton"></div>
-              <div class="skeleton"></div>
+            <div class="albums-admin-row" id="albums-admin-row">
+              <div class="skeleton" style="flex:0 0 270px;min-height:320px;border-radius:var(--r)"></div>
+              <div class="skeleton" style="flex:0 0 270px;min-height:320px;border-radius:var(--r)"></div>
             </div>
           </div>
         </div>
@@ -1314,7 +1469,7 @@
             <div class="toolbar">
               <div>
                 <div class="card-title">Gérer les vidéos</div>
-                <p class="toolbar-info"><span id="vid-count">—</span> vidéos &nbsp;·&nbsp; Visibles sur la page Galerie</p>
+                <p class="toolbar-info"><span id="vid-count"></span> vidéos &nbsp;·&nbsp; Visibles sur la page Galerie</p>
               </div>
               <button class="btn-refresh" onclick="loadVideosAdmin()">
                 <svg viewBox="0 0 24 24"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
@@ -1331,6 +1486,48 @@
 
         <!-- FRONT-END -->
         <div class="tab-panel" id="panel-frontend">
+          <!-- SITE IMAGES -->
+          <div class="card">
+            <div class="card-title">Images du site</div>
+            <p class="card-sub">Modifiez les images principales affichées sur le site public.</p>
+            <div class="site-images-grid">
+              <!-- Hero -->
+              <div class="site-img-item">
+                <div class="site-img-label">Image fond  Section Héro</div>
+                <div class="site-img-preview-wrap" id="hero-img-wrap">
+                  <img id="hero-img-preview" src="../Web site/images/image_9.jpeg" alt="Hero" />
+                  <div class="site-img-spinner" id="hero-img-spinner">
+                    <div class="spinner"></div>
+                  </div>
+                </div>
+                <div class="site-img-actions">
+                  <label class="btn-upload-img" title="Changer l'image de fond">
+                    ↑ Changer
+                    <input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="uploadSiteImage('hero.image_url', this)">
+                  </label>
+                  <button class="btn-reset-img" onclick="resetSiteImage('hero.image_url','../Web site/images/image_9.jpeg','hero-img-preview')">Par défaut</button>
+                </div>
+              </div>
+              <!-- About -->
+              <div class="site-img-item">
+                <div class="site-img-label">Image  Section À propos</div>
+                <div class="site-img-preview-wrap square" id="about-img-wrap">
+                  <img id="about-img-preview" src="../Web site/images/image_6.jpg" alt="About" />
+                  <div class="site-img-spinner" id="about-img-spinner">
+                    <div class="spinner"></div>
+                  </div>
+                </div>
+                <div class="site-img-actions">
+                  <label class="btn-upload-img" title="Changer l'image À propos">
+                    ↑ Changer
+                    <input type="file" accept="image/jpeg,image/png,image/webp" style="display:none" onchange="uploadSiteImage('about.image_url', this)">
+                  </label>
+                  <button class="btn-reset-img" onclick="resetSiteImage('about.image_url','../Web site/images/image_6.jpg','about-img-preview')">Par défaut</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- STATS -->
           <div class="card">
             <div class="card-title">Statistiques du site</div>
@@ -1393,8 +1590,8 @@
               <div>
                 <div class="card-title">Messages reçus</div>
                 <p class="toolbar-info">
-                  <span id="msg-total">—</span> messages &nbsp;·&nbsp;
-                  <span id="msg-unread" style="color: var(--teal)">—</span> non
+                  <span id="msg-total"></span> messages &nbsp;·&nbsp;
+                  <span id="msg-unread" style="color: var(--teal)"></span> non
                   lus
                 </p>
               </div>
@@ -1448,7 +1645,7 @@
 
     <script>
       // ══════════════════════════════════════════════════════════════
-      //  SEULE LA CLÉ PUBLIQUE (anon) EST ICI — aucune SECRET KEY
+      //  SEULE LA CLÉ PUBLIQUE (anon) EST ICI  aucune SECRET KEY
       //  La sécurité est assurée par Supabase Auth (JWT) + RLS
       // ══════════════════════════════════════════════════════════════
       const SUPABASE_URL = "https://mgbfcznrpiwobsxxryhl.supabase.co";
@@ -1510,8 +1707,9 @@
         document.getElementById("admin-page").style.display = "block";
         document.getElementById("admin-email-display").textContent =
           user?.email || "";
-        loadGalleryAdmin();
+        loadAlbumsAdmin();
         loadMessages();
+        loadSiteImages();
       }
       function showErr(msg) {
         const e = document.getElementById("login-err");
@@ -1571,229 +1769,238 @@
         );
       }
 
-      // ── FILES ─────────────────────────────────────────────────────
-      let pending = [];
-      function onDragOver(e) {
-        e.preventDefault();
-        document.getElementById("drop-zone").classList.add("dragover");
-      }
-      function onDragLeave() {
-        document.getElementById("drop-zone").classList.remove("dragover");
-      }
-      function onDrop(e) {
-        e.preventDefault();
-        onDragLeave();
-        onFiles(e.dataTransfer.files);
-      }
-      function onFiles(files) {
-        Array.from(files).forEach((file) => {
-          if (!file.type.startsWith("image/")) return;
-          if (file.size > 10 * 1024 * 1024) {
-            toast(file.name + " dépasse 10 Mo", "err");
-            return;
-          }
-          const idx = pending.length;
-          pending.push({
-            file,
-            title: file.name.replace(/\.[^.]+$/, ""),
-            description: "",
-          });
-          const reader = new FileReader();
-          reader.onload = (e) => {
-            const c = document.createElement("div");
-            c.className = "preview-card";
-            c.id = "pc-" + idx;
-            c.innerHTML = `<div class="preview-img"><img src="${e.target.result}" /></div>
-        <div class="preview-body">
-          <input class="preview-field" type="text" placeholder="Titre" value="${escA(pending[idx].title)}" oninput="pending[${idx}].title=this.value" />
-          <input class="preview-field" type="text" placeholder="Description (optionnel)" oninput="pending[${idx}].description=this.value" />
-          <button class="preview-rm" onclick="removePreview(${idx})">✕ Retirer</button>
-        </div>`;
-            document.getElementById("preview-list").appendChild(c);
-          };
-          reader.readAsDataURL(file);
+      // ── ALBUMS ADMIN ──────────────────────────────────────────────
+      async function loadAlbumsAdmin() {
+        const row = document.getElementById("albums-admin-row");
+        row.innerHTML = '<div class="skeleton" style="flex:0 0 270px;min-height:320px;border-radius:var(--r)"></div><div class="skeleton" style="flex:0 0 270px;min-height:320px;border-radius:var(--r)"></div>';
+
+        const { data: albums, error: aErr } = await sb
+          .from("gallery_albums")
+          .select("id,title,display_order,is_active")
+          .order("display_order", { ascending: true });
+        if (aErr) { toast("Erreur chargement galeries", "err"); return; }
+
+        if (!albums || !albums.length) {
+          row.innerHTML = '<div class="empty" style="flex:1"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p>Aucune galerie  cliquez sur <strong>+ Nouvelle galerie</strong></p></div>';
+          return;
+        }
+
+        // Load all images for these albums
+        const albumIds = albums.map(a => a.id);
+        const { data: allImgs } = await sb
+          .from("gallery_images")
+          .select("id,image_url,storage_path,title,display_order,album_id")
+          .in("album_id", albumIds)
+          .eq("is_active", true)
+          .order("display_order", { ascending: true });
+
+        const imgsByAlbum = {};
+        (allImgs || []).forEach(img => {
+          if (!imgsByAlbum[img.album_id]) imgsByAlbum[img.album_id] = [];
+          imgsByAlbum[img.album_id].push(img);
         });
-        document.getElementById("upload-btn").style.display = pending.filter(
-          Boolean,
-        ).length
-          ? "inline-flex"
-          : "none";
-      }
-      function removePreview(idx) {
-        pending[idx] = null;
-        const c = document.getElementById("pc-" + idx);
-        if (c) c.remove();
-        if (!pending.filter(Boolean).length) {
-          pending = [];
-          document.getElementById("upload-btn").style.display = "none";
-        }
+
+        row.innerHTML = "";
+        albums.forEach(album => {
+          const imgs = imgsByAlbum[album.id] || [];
+          row.appendChild(buildAlbumAdminCard(album, imgs));
+        });
       }
 
-      // ── UPLOAD ────────────────────────────────────────────────────
-      async function uploadAll() {
-        const toUp = pending.filter(Boolean);
-        if (!toUp.length) return;
-        const btn = document.getElementById("upload-btn"),
-          pw = document.getElementById("prog-wrap"),
-          pb = document.getElementById("prog-bar");
-        btn.disabled = true;
-        btn.innerHTML = '<span class="spin"></span> Upload en cours…';
-        pw.style.display = "block";
-        let done = 0;
-        for (const item of toUp) {
+      function buildAlbumAdminCard(album, imgs) {
+        const card = document.createElement("div");
+        card.className = "album-admin-card";
+        card.dataset.albumId = album.id;
+
+        const thumbsHTML = imgs.map(img => `
+          <div class="album-img-thumb" data-img-id="${escA(img.id)}" data-storage="${escA(img.storage_path || '')}">
+            <img src="${escA(img.image_url)}" alt="${esc(img.title || '')}" loading="lazy"/>
+            <button class="album-img-del" onclick="deleteAlbumImage('${escA(img.id)}','${escA(img.storage_path || '')}','${escA(album.id)}')" title="Supprimer">✕</button>
+          </div>`).join("");
+
+        const addCell = `
+          <div class="album-add-cell" title="Ajouter des images">
+            <span style="pointer-events:none">+</span>
+            <input type="file" multiple accept="image/jpeg,image/png,image/webp"
+              onchange="addImagesToAlbum('${escA(album.id)}', this)" />
+          </div>`;
+
+        card.innerHTML = `
+          <div class="album-admin-header">
+            <input class="album-admin-title-input" value="${escA(album.title)}"
+              onblur="renameAlbum('${escA(album.id)}', this.value, '${escA(album.title)}')"
+              onkeydown="if(event.key==='Enter')this.blur()" title="Cliquer pour renommer" />
+            <button class="btn-del-album" onclick="deleteAlbum('${escA(album.id)}')" title="Supprimer la galerie">
+              <svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M9 6V4h6v2"/></svg>
+            </button>
+          </div>
+          <div class="album-admin-grid">${thumbsHTML}${addCell}</div>
+          <div class="album-img-count">${imgs.length} image${imgs.length !== 1 ? 's' : ''}</div>`;
+        return card;
+      }
+
+      // ── HELPER AUDIT ─────────────────────────────────────────────
+      async function logAudit(key, section, oldVal, newVal) {
+        try {
+          const { data: { user } } = await sb.auth.getUser();
+          await sb.from('content_audit_log').insert({
+            content_key: key,
+            section,
+            lang: '*',
+            old_value: oldVal ?? null,
+            new_value: newVal ?? null,
+            changed_by: user?.id || null,
+            changed_by_email: user?.email || '',
+          });
+        } catch (_) {}
+      }
+
+      async function createAlbum() {
+        const title = prompt("Nom de la nouvelle galerie :", "Nouvelle galerie");
+        if (!title) return;
+        const { data: last } = await sb.from("gallery_albums").select("display_order").order("display_order", { ascending: false }).limit(1);
+        const nextOrder = last?.length ? last[0].display_order + 1 : 1;
+        const { error } = await sb.from("gallery_albums").insert({ title, display_order: nextOrder, is_active: true });
+        if (error) { toast("Erreur création galerie", "err"); return; }
+        await logAudit('album.create', 'gallery', null, title);
+        toast("Galerie créée !");
+        loadAlbumsAdmin();
+      }
+
+      async function renameAlbum(albumId, newTitle, oldTitle) {
+        const trimmed = newTitle.trim();
+        if (!trimmed || trimmed === (oldTitle || '').trim()) return;
+        const { error } = await sb.from("gallery_albums").update({ title: trimmed }).eq("id", albumId);
+        if (error) { toast("Erreur renommage", "err"); return; }
+        await logAudit('album.rename', 'gallery', oldTitle || null, trimmed);
+        toast("Galerie renommée");
+      }
+
+      async function deleteAlbum(albumId) {
+        if (!confirm("Supprimer cette galerie et toutes ses images ? Action irréversible.")) return;
+        const { data: albumData } = await sb.from("gallery_albums").select("title").eq("id", albumId).single();
+        const albumTitle = albumData?.title || albumId;
+        const { data: imgs } = await sb.from("gallery_images").select("storage_path").eq("album_id", albumId);
+        if (imgs?.length) {
+          const paths = imgs.map(i => i.storage_path).filter(Boolean);
+          if (paths.length) await sb.storage.from(BUCKET).remove(paths);
+        }
+        await sb.from("gallery_images").delete().eq("album_id", albumId);
+        const { error } = await sb.from("gallery_albums").delete().eq("id", albumId);
+        if (error) { toast("Erreur suppression galerie", "err"); return; }
+        await logAudit('album.delete', 'gallery', albumTitle + (imgs?.length ? ` (${imgs.length} image(s))` : ''), null);
+        toast("Galerie supprimée");
+        loadAlbumsAdmin();
+      }
+
+      async function addImagesToAlbum(albumId, input) {
+        const files = Array.from(input.files || []);
+        if (!files.length) return;
+        const card = input.closest(".album-admin-card");
+        const addCell = input.closest(".album-add-cell");
+        if (addCell) addCell.innerHTML = '<span class="spin"></span>';
+
+        let uploaded = 0;
+        for (const file of files) {
+          if (!file.type.startsWith("image/")) continue;
+          if (file.size > 10 * 1024 * 1024) { toast(file.name + " dépasse 10 Mo", "err"); continue; }
           try {
-            await uploadOne(item);
-            done++;
-            pb.style.width = `${Math.round((done / toUp.length) * 100)}%`;
-          } catch (err) {
-            toast("Échec : " + item.file.name + " — " + err.message, "err");
+            await uploadOneToAlbum(file, albumId);
+            uploaded++;
+          } catch (e) {
+            toast("Échec : " + file.name, "err");
           }
         }
-        pending = [];
-        document.getElementById("preview-list").innerHTML = "";
-        btn.style.display = "none";
-        btn.disabled = false;
-        btn.innerHTML =
-          '<svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" fill="none" stroke-width="2"><polyline points="16 16 12 12 8 16"/><line x1="12" y1="12" x2="12" y2="21"/></svg> Uploader dans la galerie';
-        setTimeout(() => {
-          pw.style.display = "none";
-          pb.style.width = "0%";
-        }, 700);
-        if (done > 0) {
-          toast(
-            `${done} image${done > 1 ? "s" : ""} uploadée${done > 1 ? "s" : ""}!`,
-          );
-          loadGalleryAdmin();
-        }
+        if (uploaded > 0) toast(`${uploaded} image${uploaded > 1 ? 's' : ''} ajoutée${uploaded > 1 ? 's' : ''} !`);
+        loadAlbumsAdmin();
       }
 
-      async function uploadOne({ file, title, description }) {
+      async function uploadOneToAlbum(file, albumId) {
         const ext = file.name.split(".").pop().toLowerCase();
         const path = `${crypto.randomUUID()}.${ext}`;
-        const { error: upErr } = await sb.storage
-          .from(BUCKET)
-          .upload(path, file, { contentType: file.type });
+        const { error: upErr } = await sb.storage.from(BUCKET).upload(path, file, { contentType: file.type });
         if (upErr) throw upErr;
-        const {
-          data: { publicUrl },
-        } = sb.storage.from(BUCKET).getPublicUrl(path);
-        const { data: last } = await sb
-          .from("gallery_images")
-          .select("display_order")
-          .order("display_order", { ascending: false })
-          .limit(1);
+        const { data: { publicUrl } } = sb.storage.from(BUCKET).getPublicUrl(path);
+        const { data: last } = await sb.from("gallery_images").select("display_order").eq("album_id", albumId).order("display_order", { ascending: false }).limit(1);
         const nextOrder = last?.length ? last[0].display_order + 1 : 1;
-        const { error: insErr } = await sb
-          .from("gallery_images")
-          .insert({
-            title: title || path,
-            description: description || "",
-            image_url: publicUrl,
-            storage_path: path,
-            display_order: nextOrder,
-            is_active: true,
-          });
-        if (insErr) throw insErr;
-      }
-
-      // ── GALERIE ADMIN ─────────────────────────────────────────────
-      let dragSrc = null;
-      async function loadGalleryAdmin() {
-        const grid = document.getElementById("gallery-admin-grid");
-        grid.innerHTML =
-          '<div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>';
-        const { data, error } = await sb
-          .from("gallery_images")
-          .select("*")
-          .order("display_order", { ascending: true });
-        if (error) {
-          toast("Erreur de chargement", "err");
-          return;
-        }
-        const imgs = data || [];
-        document.getElementById("img-count").textContent = imgs.length;
-        if (!imgs.length) {
-          grid.innerHTML =
-            '<div class="empty"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><p>Aucune image — uploadez en ci-dessus !</p></div>';
-          return;
-        }
-        grid.innerHTML = "";
-        imgs.forEach((img, i) => {
-          const c = document.createElement("div");
-          c.className = "admin-card";
-          c.draggable = true;
-          c.dataset.id = img.id;
-          c.innerHTML = `<div class="adm-img"><img src="${escA(img.image_url)}" alt="${esc(img.title)}" loading="lazy"/><div class="order-badge">#${i + 1}</div></div>
-      <div class="adm-body">
-        <div class="adm-title">${esc(img.title || "Sans titre")}</div>
-        <div class="adm-desc">${esc(img.description || "—")}</div>
-        <div class="adm-actions">
-          <button class="btn-toggle ${img.is_active ? "on" : "off"}" onclick="toggleActive('${img.id}',${img.is_active})">${img.is_active ? "✓ Visible" : "✕ Masqué"}</button>
-          <button class="btn-del" onclick="deleteImage('${img.id}','${escA(img.storage_path)}')"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
-        </div>
-      </div>`;
-          c.addEventListener("dragstart", (e) => {
-            dragSrc = c;
-            c.classList.add("dragging");
-            e.dataTransfer.effectAllowed = "move";
-          });
-          c.addEventListener("dragend", () => c.classList.remove("dragging"));
-          c.addEventListener("dragover", (e) => {
-            e.preventDefault();
-            c.classList.add("drag-over");
-          });
-          c.addEventListener("dragleave", () =>
-            c.classList.remove("drag-over"),
-          );
-          c.addEventListener("drop", (e) => {
-            e.preventDefault();
-            c.classList.remove("drag-over");
-            if (dragSrc !== c) reorder(dragSrc, c);
-          });
-          grid.appendChild(c);
+        const { error: insErr } = await sb.from("gallery_images").insert({
+          title: file.name.replace(/\.[^.]+$/, ""),
+          description: "",
+          image_url: publicUrl,
+          storage_path: path,
+          display_order: nextOrder,
+          is_active: true,
+          album_id: albumId,
         });
+        if (insErr) throw insErr;
+        await logAudit('image.upload', 'gallery', null, file.name + ' → album:' + albumId);
       }
 
-      async function reorder(src, target) {
-        const grid = document.getElementById("gallery-admin-grid");
-        const cards = [...grid.querySelectorAll(".admin-card")];
-        const si = cards.indexOf(src),
-          ti = cards.indexOf(target);
-        grid.insertBefore(src, si < ti ? target.nextSibling : target);
-        const updates = [...grid.querySelectorAll(".admin-card")].map((c, i) =>
-          sb
-            .from("gallery_images")
-            .update({ display_order: i + 1 })
-            .eq("id", c.dataset.id),
-        );
-        await Promise.all(updates);
-        toast("Ordre sauvegardé !");
-        loadGalleryAdmin();
-      }
-
-      async function toggleActive(id, current) {
-        const { error } = await sb
-          .from("gallery_images")
-          .update({ is_active: !current })
-          .eq("id", id);
-        if (error) {
-          toast("Erreur", "err");
-          return;
-        }
-        toast(!current ? "Image rendue visible" : "Image masquée du site");
-        loadGalleryAdmin();
-      }
-
-      async function deleteImage(id, storagePath) {
-        if (!confirm("Supprimer cette image ? Action irréversible.")) return;
-        await sb.storage.from(BUCKET).remove([storagePath]);
-        const { error } = await sb.from("gallery_images").delete().eq("id", id);
-        if (error) {
-          toast("Erreur de suppression", "err");
-          return;
-        }
+      async function deleteAlbumImage(imageId, storagePath, albumId) {
+        if (!confirm("Supprimer cette image ?")) return;
+        if (storagePath) await sb.storage.from(BUCKET).remove([storagePath]);
+        const { error } = await sb.from("gallery_images").delete().eq("id", imageId);
+        if (error) { toast("Erreur suppression", "err"); return; }
+        await logAudit('image.delete', 'gallery', storagePath || imageId, null);
         toast("Image supprimée");
-        loadGalleryAdmin();
+        loadAlbumsAdmin();
+      }
+
+      // ── SITE IMAGES (hero / about) ────────────────────────────────
+      async function loadSiteImages() {
+        const { data } = await sb.from("site_content")
+          .select("key,value")
+          .in("key", ["hero.image_url", "about.image_url"])
+          .eq("lang", "en");
+        if (data) {
+          data.forEach(r => {
+            if (r.key === "hero.image_url" && r.value) document.getElementById("hero-img-preview").src = r.value;
+            if (r.key === "about.image_url" && r.value) document.getElementById("about-img-preview").src = r.value;
+          });
+        }
+      }
+
+      async function uploadSiteImage(imageKey, input) {
+        const file = input.files?.[0];
+        if (!file || !file.type.startsWith("image/")) return;
+        if (file.size > 10 * 1024 * 1024) { toast("Image trop grande (max 10 Mo)", "err"); return; }
+        const spinnerId = imageKey === "hero.image_url" ? "hero-img-spinner" : "about-img-spinner";
+        const previewId = imageKey === "hero.image_url" ? "hero-img-preview" : "about-img-preview";
+        document.getElementById(spinnerId).classList.add("show");
+        try {
+          const ext = file.name.split(".").pop().toLowerCase();
+          const path = `${imageKey.replace(".", "_")}_${Date.now()}.${ext}`;
+          const { error: upErr } = await sb.storage.from("site-images").upload(path, file, { contentType: file.type, upsert: false });
+          if (upErr) throw upErr;
+          const { data: { publicUrl } } = sb.storage.from("site-images").getPublicUrl(path);
+          const { data: { user } } = await sb.auth.getUser();
+          const { error: scErr } = await sb.from("site_content").upsert({
+            key: imageKey,
+            section: "images",
+            lang: "en",
+            value: publicUrl,
+            updated_by: user?.id || null,
+          }, { onConflict: "key,lang" });
+          if (scErr) throw scErr;
+          const oldUrl = document.getElementById(previewId).src;
+          document.getElementById(previewId).src = publicUrl;
+          await logAudit(imageKey, 'images', oldUrl || null, publicUrl);
+          toast("Image mise à jour !");
+        } catch (e) {
+          toast("Erreur : " + e.message, "err");
+        } finally {
+          document.getElementById(spinnerId).classList.remove("show");
+          input.value = "";
+        }
+      }
+
+      async function resetSiteImage(imageKey, defaultSrc, previewId) {
+        if (!confirm("Remettre l'image par défaut ?")) return;
+        const oldUrl = document.getElementById(previewId).src;
+        await sb.from("site_content").delete().eq("key", imageKey).eq("lang", "en");
+        document.getElementById(previewId).src = defaultSrc;
+        await logAudit(imageKey + '.reset', 'images', oldUrl || null, defaultSrc);
+        toast("Image réinitialisée");
       }
 
       // ── MESSAGES ─────────────────────────────────────────────────
@@ -1830,14 +2037,14 @@
           tr.innerHTML = `
       <td style="white-space:nowrap;font-size:.77rem;color:var(--text-mid)">${fmtDate(msg.created_at)}</td>
       <td>${!msg.is_read ? '<span class="unread-dot"></span>' : ""}${esc(msg.first_name)}</td>
-      <td>${esc(msg.last_name || "—")}</td>
+      <td>${esc(msg.last_name || "")}</td>
       <td><a href="mailto:${escA(msg.email)}" style="color:var(--teal-mid)">${esc(msg.email)}</a></td>
-      <td style="font-size:.82rem">${esc(msg.phone || "—")}</td>
+      <td style="font-size:.82rem">${esc(msg.phone || "")}</td>
       <td>
         <span class="msg-type">${esc(msg.enquiry_type || "autre")}</span>
         ${(msg.visit_date || msg.visit_time) ? `<br><small style="color:var(--teal-mid);font-size:.72rem">📅 ${esc(msg.visit_date || '')} ${esc(msg.visit_time || '')}</small>` : ''}
       </td>
-      <td style="max-width:280px;font-size:.82rem;color:var(--text-mid);white-space:pre-wrap;word-break:break-word">${esc(msg.message || "—")}</td>
+      <td style="max-width:280px;font-size:.82rem;color:var(--text-mid);white-space:pre-wrap;word-break:break-word">${esc(msg.message || "")}</td>
       <td>${!msg.is_read ? `<button class="btn-mark" onclick="markRead('${msg.id}')">Marquer lu</button>` : '<span class="read-ok">Lu ✓</span>'}</td>`;
           tbody.appendChild(tr);
         });
@@ -1861,9 +2068,9 @@
           { key: 'hero.cta2',   label: 'Bouton secondaire', multiline: false },
         ],
         about: [
-          { key: 'about.p1', label: 'À propos — Paragraphe 1', multiline: true },
-          { key: 'about.p2', label: 'À propos — Paragraphe 2', multiline: true },
-          { key: 'about.p3', label: 'À propos — Paragraphe 3', multiline: true },
+          { key: 'about.p1', label: 'À propos  Paragraphe 1', multiline: true },
+          { key: 'about.p2', label: 'À propos  Paragraphe 2', multiline: true },
+          { key: 'about.p3', label: 'À propos  Paragraphe 3', multiline: true },
         ],
         mission: [
           { key: 'mission.quote', label: 'Citation centrale', multiline: true },
@@ -1873,18 +2080,18 @@
           { key: 'mission.text',  label: 'Texte Mission', multiline: true },
         ],
         services: [
-          { key: 's1.title', label: 'Service 1 — Titre', multiline: false },
-          { key: 's1.text',  label: 'Service 1 — Texte', multiline: true },
-          { key: 's2.title', label: 'Service 2 — Titre', multiline: false },
-          { key: 's2.text',  label: 'Service 2 — Texte', multiline: true },
-          { key: 's3.title', label: 'Service 3 — Titre', multiline: false },
-          { key: 's3.text',  label: 'Service 3 — Texte', multiline: true },
-          { key: 's4.title', label: 'Service 4 — Titre', multiline: false },
-          { key: 's4.text',  label: 'Service 4 — Texte', multiline: true },
-          { key: 's5.title', label: 'Service 5 — Titre', multiline: false },
-          { key: 's5.text',  label: 'Service 5 — Texte', multiline: true },
-          { key: 's6.title', label: 'Service 6 — Titre', multiline: false },
-          { key: 's6.text',  label: 'Service 6 — Texte', multiline: true },
+          { key: 's1.title', label: 'Service 1  Titre', multiline: false },
+          { key: 's1.text',  label: 'Service 1  Texte', multiline: true },
+          { key: 's2.title', label: 'Service 2  Titre', multiline: false },
+          { key: 's2.text',  label: 'Service 2  Texte', multiline: true },
+          { key: 's3.title', label: 'Service 3  Titre', multiline: false },
+          { key: 's3.text',  label: 'Service 3  Texte', multiline: true },
+          { key: 's4.title', label: 'Service 4  Titre', multiline: false },
+          { key: 's4.text',  label: 'Service 4  Texte', multiline: true },
+          { key: 's5.title', label: 'Service 5  Titre', multiline: false },
+          { key: 's5.text',  label: 'Service 5  Texte', multiline: true },
+          { key: 's6.title', label: 'Service 6  Titre', multiline: false },
+          { key: 's6.text',  label: 'Service 6  Texte', multiline: true },
         ],
         gallery: [
           { key: 'gallery.label', label: 'Label section galerie', multiline: false },
@@ -2040,7 +2247,7 @@
         if (btn) { btn.disabled = true; btn.textContent = '⏳ Traduction…'; }
 
         const enText = getFieldVal(keySlug, 'en');
-        if (!enText) { toast('Texte EN vide — rien à traduire', 'err'); if (btn) { btn.disabled = false; btn.textContent = '🌐 Traduire FR + ZH depuis EN'; } return; }
+        if (!enText) { toast('Texte EN vide  rien à traduire', 'err'); if (btn) { btn.disabled = false; btn.textContent = '🌐 Traduire FR + ZH depuis EN'; } return; }
 
         const [frText, zhText] = await Promise.all([
           autoTranslate(enText, 'fr'),
@@ -2057,7 +2264,7 @@
         }
 
         if (btn) { btn.disabled = false; btn.textContent = '🌐 Traduire FR + ZH depuis EN'; }
-        toast('Traduction appliquée — vérifiez et sauvegardez !');
+        toast('Traduction appliquée  vérifiez et sauvegardez !');
       }
 
       async function autoTranslate(text, targetLang) {
@@ -2093,8 +2300,11 @@
           if (!el) continue;
           const newVal = el.value.trim();
           if (newVal === s.value) continue;
-          await sb.from('site_stats').update({ value: newVal, updated_by: user?.id || null }).eq('stat_key', s.stat_key);
-          s.value = newVal;
+          const { error: stErr } = await sb.from('site_stats').update({ value: newVal, updated_by: user?.id || null }).eq('stat_key', s.stat_key);
+          if (!stErr) {
+            await logAudit('stat.' + s.stat_key, 'stats', s.value, newVal);
+            s.value = newVal;
+          }
         }
         toast('Statistiques mises à jour !');
       }
@@ -2109,14 +2319,29 @@
           tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:24px;color:var(--text-mid)">Aucune modification enregistrée.</td></tr>';
           return;
         }
-        tbody.innerHTML = data.map(r => `<tr>
-          <td style="white-space:nowrap;font-size:.72rem">${fmtDate(r.changed_at)}</td>
-          <td style="font-size:.76rem">${esc(r.changed_by_email || '—')}</td>
-          <td><code style="font-size:.72rem;background:var(--beige);padding:2px 5px;border-radius:2px">${esc(r.content_key)}</code></td>
-          <td>${esc(r.lang)}</td>
-          <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--red)" title="${escA(r.old_value || '')}">${esc(r.old_value || '—')}</td>
-          <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--green)" title="${escA(r.new_value)}">${esc(r.new_value)}</td>
-        </tr>`).join('');
+        const sectionLabel = { gallery:'🖼 Galerie', images:'🖼 Image site', stats:'📊 Stats', content:'📝 Contenu' };
+        const keyLabel = {
+          'album.create':'Création galerie','album.rename':'Renommage galerie','album.delete':'Suppression galerie',
+          'image.upload':'Upload image','image.delete':'Suppression image',
+          'hero.image_url':'Image Hero','about.image_url':'Image About',
+          'hero.image_url.reset':'Reset Hero','about.image_url.reset':'Reset About',
+        };
+        tbody.innerHTML = data.map(r => {
+          const sec = r.section || 'content';
+          const label = keyLabel[r.content_key] || r.content_key;
+          const lang = r.lang === '*' ? '' : r.lang?.toUpperCase();
+          return `<tr>
+            <td style="white-space:nowrap;font-size:.72rem">${fmtDate(r.changed_at)}</td>
+            <td style="font-size:.76rem">${esc(r.changed_by_email || '')}</td>
+            <td>
+              <span style="font-size:.65rem;background:var(--beige);color:var(--text-mid);padding:1px 5px;border-radius:3px;margin-right:4px">${esc(sectionLabel[sec] || sec)}</span>
+              <code style="font-size:.72rem">${esc(label)}</code>
+            </td>
+            <td>${esc(lang)}</td>
+            <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--red)" title="${escA(r.old_value || '')}">${esc(r.old_value || '')}</td>
+            <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--green)" title="${escA(r.new_value || '')}">${esc(r.new_value || '')}</td>
+          </tr>`;
+        }).join('');
       }
 
       // ── INIT FRONTEND TAB ─────────────────────────────────────
@@ -2197,7 +2422,7 @@
         badge.style.display = vids.length ? 'inline' : 'none';
 
         if (!vids.length) {
-          grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg><p>Aucune vidéo — ajoutez-en ci-dessus !</p></div>';
+          grid.innerHTML = '<div class="empty" style="grid-column:1/-1"><svg viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg><p>Aucune vidéo  ajoutez-en ci-dessus !</p></div>';
           return;
         }
 
